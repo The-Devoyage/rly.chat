@@ -5,8 +5,10 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
+import { useRouter } from "next/navigation";
 
 export default function LoadSimPage() {
+  const router = useRouter();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -37,6 +39,8 @@ export default function LoadSimPage() {
         decryptData(encryptedData, nonce, password);
 
         localStorage.setItem("sim", JSON.stringify(simData));
+        window.dispatchEvent(new Event("storage"));
+        router.push("/chat");
       } catch (error) {
         console.error("Error decrypting SIM:", error);
         window.alert("Failed to decrypt SIM. Wrong password?");

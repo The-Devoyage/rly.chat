@@ -12,11 +12,19 @@ export const siteConfig = {
       label: "Sims",
       href: "/sims",
     },
+    {
+      label: "Chat",
+      href: "/chat",
+    },
   ],
   navMenuItems: [
     {
       label: "Sims",
       href: "/sims",
+    },
+    {
+      label: "Chat",
+      href: "/chat",
     },
   ],
   links: {

@@ -8,7 +8,7 @@ export default function SimsPage() {
     <div className="flex gap-4 flex-col p-4 border border-sm rounded border-orange-500">
       <Alert
         color="primary"
-        description="A SIM here is just like a SIM Card in your phone. It's how messages get to you."
+        description="A SIM on rly.chat is just like a SIM Card in your phone. It's how messages get to you."
         className="text-left"
       />
       <div className="flex flex-col md:flex-row w-full justify-center gap-4">

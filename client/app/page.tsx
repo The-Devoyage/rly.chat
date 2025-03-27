@@ -8,9 +8,9 @@ import { GithubIcon, Logo } from "@/components/icons";
 export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 h-full">
-      <div className="inline-block max-w-xl text-center justify-center items-center">
-        <span className={title()}>Message&nbsp;</span>
-        <span className={title({ color: "orange" })}>Freely.</span>
+      <div className="inline-block max-w-lg text-center justify-center items-center">
+        <span className={title()}>Freely Message with &nbsp;</span>
+        <span className={title({ color: "orange" })}>RLY.</span>
         <br />
         <div className={subtitle({ class: "mt-4" })}>
           Open Source and End to End Encrypted Chat.

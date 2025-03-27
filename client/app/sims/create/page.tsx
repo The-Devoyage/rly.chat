@@ -5,8 +5,11 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
+import { useRouter } from "next/navigation";
 
 export default function CreateSimPage() {
+  const router = useRouter();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -27,25 +30,33 @@ export default function CreateSimPage() {
       profile,
     };
 
-    // Save to localStorage (optional)
-    localStorage.setItem("sim", JSON.stringify(sim));
+    const c = window.confirm(
+      "Downloading SIM... Keep this file safe. There are no accounts on RLY. If you loose this file, you will loose access to your SIM forever.",
+    );
 
-    // Convert SIM object to JSON string
-    const jsonString = JSON.stringify(sim, null, 2);
+    if (c) {
+      // Save to localStorage (optional)
+      localStorage.setItem("sim", JSON.stringify(sim));
 
-    // Create a Blob and trigger download
-    const blob = new Blob([jsonString], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+      // Convert SIM object to JSON string
+      const jsonString = JSON.stringify(sim, null, 2);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${identifier}-sim.json`; // File name based on identifier
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+      // Create a Blob and trigger download
+      const blob = new Blob([jsonString], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
 
-    // Clean up object URL
-    URL.revokeObjectURL(url);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${identifier}-sim.json`; // File name based on identifier
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // Clean up object URL
+      URL.revokeObjectURL(url);
+
+      router.push("/chat");
+    }
   };
 
   return (

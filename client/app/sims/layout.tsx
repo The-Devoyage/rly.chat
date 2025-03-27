@@ -4,10 +4,11 @@ export default function CreateSimLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-lg text-center justify-center">
-        {children}
+    <section className="flex flex-col gap-4 w-full">
+      <div className="flex gap-4 flex-col p-4 border border-sm rounded border-orange-500">
+        SIMs
       </div>
+      <div>{children}</div>
     </section>
   );
 }

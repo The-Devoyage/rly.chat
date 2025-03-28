@@ -1,5 +1,6 @@
 "use client";
 
+import { Sim } from "@/types";
 import { encryptData, generateKeyPair } from "@/utils/encryption";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
@@ -23,9 +24,10 @@ export default function CreateSimPage() {
     }
 
     const keyPair = generateKeyPair();
-    const profile = encryptData({ ...keyPair, contacts: [] }, password);
+    const rawSim: Sim = { identifier, profile: { ...keyPair, contacts: [] } };
+    const profile = encryptData(rawSim.profile, password);
 
-    const sim = {
+    const protectedSim = {
       identifier,
       profile,
     };
@@ -36,10 +38,10 @@ export default function CreateSimPage() {
 
     if (c) {
       // Save to localStorage (optional)
-      localStorage.setItem("sim", JSON.stringify(sim));
+      localStorage.setItem("sim", JSON.stringify(protectedSim));
 
       // Convert SIM object to JSON string
-      const jsonString = JSON.stringify(sim, null, 2);
+      const jsonString = JSON.stringify(protectedSim, null, 2);
 
       // Create a Blob and trigger download
       const blob = new Blob([jsonString], { type: "application/json" });
@@ -55,6 +57,7 @@ export default function CreateSimPage() {
       // Clean up object URL
       URL.revokeObjectURL(url);
 
+      window.dispatchEvent(new Event("storage"));
       router.push("/chat");
     }
   };

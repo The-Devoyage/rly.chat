@@ -1,7 +1,6 @@
 "use client";
 
-import { SimIdentifier } from "@/components/simIdentifier";
-import { useGetSim } from "@/utils/useGetSim";
+import { useSim } from "@/utils/useSim";
 import { Chip } from "@heroui/chip";
 import {
   Dropdown,
@@ -12,7 +11,7 @@ import {
 import { useRouter } from "next/navigation";
 
 export const IdentifierDropdown = () => {
-  const sim = useGetSim();
+  const { identifier, handleLock } = useSim(false);
   const router = useRouter();
 
   const handleUnmountSim = () => {
@@ -21,18 +20,21 @@ export const IdentifierDropdown = () => {
     router.push("/");
   };
 
-  if (!sim) {
+  if (!identifier) {
     return null;
   }
 
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
-        <Chip color="default">
-          <SimIdentifier />
+        <Chip color="default" className="cursor-pointer">
+          {identifier}
         </Chip>
       </DropdownTrigger>
       <DropdownMenu>
+        <DropdownItem key="lock_unlock_sim" onPress={handleLock}>
+          Lock Sim
+        </DropdownItem>
         <DropdownItem key="unmount_sim" onPress={handleUnmountSim}>
           Unmount SIM
         </DropdownItem>

@@ -72,7 +72,7 @@ export default function LoadSimPage() {
           label="Password"
           labelPlacement="outside"
           name="password"
-          placeholder="Protect your SIM"
+          placeholder="Unlock your SIM"
           type="password"
         />
 

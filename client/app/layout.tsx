@@ -7,6 +7,7 @@ import { Providers } from "./providers";
 import { siteConfig } from "@/config/site";
 import { fontMono } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
+import { PasswordPrompt } from "@/components/password-prompt";
 
 export const metadata: Metadata = {
   title: {
@@ -44,6 +45,7 @@ export default function RootLayout({
           <div className="relative flex flex-col h-screen">
             <Navbar />
             <main className="container mx-auto max-w-7xl pt-8 px-6 flex-grow">
+              <PasswordPrompt />
               {children}
             </main>
           </div>

@@ -6,7 +6,7 @@ export default function CreateSimLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-col gap-4 w-full">
+    <section className="flex flex-col gap-4 w-full mb-8">
       <div className="flex gap-4  p-4 border border-sm rounded border-orange-500 justify-between items-center">
         Chat
         <Button size="sm" color="primary">

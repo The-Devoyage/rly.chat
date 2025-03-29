@@ -18,8 +18,10 @@ export const useSim = (requestUnlock = true) => {
       try {
         const storedSim = window.localStorage.getItem("sim");
 
-        if (!storedSim) {
+        if (!storedSim && requestUnlock) {
+          setIdentifier(null);
           router.push("/sims");
+          return;
         }
 
         const simData = JSON.parse(storedSim!);
@@ -45,8 +47,7 @@ export const useSim = (requestUnlock = true) => {
         setSim(sim);
         setLoading(false);
       } catch (err) {
-        console.error(err);
-        window.alert("Incorrect password or invalid sim.");
+        console.warn(err);
       }
     };
 

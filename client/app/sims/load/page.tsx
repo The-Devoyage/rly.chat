@@ -1,19 +1,23 @@
 "use client";
 
+import { GlobalContext } from "@/app/providers";
 import { decryptData } from "@/utils/encryption";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
 
 export default function LoadSimPage() {
   const router = useRouter();
+  const { setSimPassword } = useContext(GlobalContext);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     const password = formData.get("password") as string;
+    setSimPassword(password);
     const simFile = formData.get("simFile") as File;
 
     if (!password || !simFile) {

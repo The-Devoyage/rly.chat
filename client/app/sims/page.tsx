@@ -3,7 +3,7 @@ import { Image } from "@heroui/image";
 import { Button } from "@heroui/button";
 import { Alert } from "@heroui/alert";
 
-export default function SimsPage() {
+export default function MountSimPage() {
   return (
     <div className="flex gap-4 flex-col p-4 border border-sm rounded border-orange-500">
       <Alert
@@ -42,9 +42,9 @@ export default function SimsPage() {
             />
           </CardBody>
           <CardFooter className="text-small justify-between">
-            <b>Load SIM</b>
-            <Button radius="sm" href="/sims/load" as="a">
-              Import
+            <b>Mount SIM</b>
+            <Button radius="sm" href="/sims/mount" as="a">
+              Mount
             </Button>
           </CardFooter>
         </Card>

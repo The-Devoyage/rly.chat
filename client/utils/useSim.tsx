@@ -26,6 +26,11 @@ export const useSim = (requestUnlock = true) => {
 
         const simData = JSON.parse(storedSim!);
 
+        if (!simData) {
+          setIdentifier(null);
+          return;
+        }
+
         setIdentifier(simData["identifier"]);
 
         if (!simPassword && requestUnlock) {
@@ -48,6 +53,9 @@ export const useSim = (requestUnlock = true) => {
         setLoading(false);
       } catch (err) {
         console.warn(err);
+        window.alert("Invalid Password");
+        setSimPassword(null);
+        setRequestSimPassword(false);
       }
     };
 

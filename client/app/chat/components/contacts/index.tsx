@@ -1,15 +1,14 @@
 "use client";
 
+import { AVATAR_COLORS } from "@/utils/constants";
 import { useSim } from "@/utils/useSim";
 import { Button } from "@heroui/button";
 import BoringAvatar from "boring-avatars";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const avatarColors = ["#D98324", "#443627", "#EFDCAB", "#F2F6D0"];
-
 export const Contacts = () => {
-  const { sim, loading } = useSim();
+  const { sim, loading } = useSim(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -27,7 +26,7 @@ export const Contacts = () => {
           name="Boakley"
           className="w-20 h-20"
           variant="beam"
-          colors={avatarColors}
+          colors={AVATAR_COLORS}
         />
         No Contacts Found
         <Button color="primary" variant="bordered">
@@ -46,7 +45,7 @@ export const Contacts = () => {
               name={c.name}
               className="w-10 h-10"
               variant="beam"
-              colors={avatarColors}
+              colors={AVATAR_COLORS}
             />
             <div className="w-full">
               <h2>{c.name}</h2>

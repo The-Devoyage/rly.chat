@@ -7,7 +7,7 @@ export default function CreateSimLayout({
 }) {
   return (
     <section
-      className="flex flex-col gap-4 w-full"
+      className="flex flex-col gap-4 w-full justify-between"
       style={{
         height: "calc(100vh - 170px)",
       }}

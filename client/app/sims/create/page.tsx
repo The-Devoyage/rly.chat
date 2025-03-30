@@ -1,5 +1,6 @@
 "use client";
 
+import { GlobalContext } from "@/app/providers";
 import { Sim } from "@/types";
 import { encryptData, generateKeyPair } from "@/utils/encryption";
 import { Alert } from "@heroui/alert";
@@ -7,9 +8,12 @@ import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { v4 } from "uuid";
 
 export default function CreateSimPage() {
   const router = useRouter();
+  const { setSimPassword } = useContext(GlobalContext);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,8 +27,10 @@ export default function CreateSimPage() {
       return;
     }
 
+    setSimPassword(password);
+
     const keyPair = generateKeyPair();
-    const rawSim: Sim = { identifier, profile: { ...keyPair, contacts: [] } };
+    const rawSim: Sim = { identifier, profile: { ...keyPair, address: v4(), contacts: [] } };
     const profile = encryptData(rawSim.profile, password);
 
     const protectedSim = {

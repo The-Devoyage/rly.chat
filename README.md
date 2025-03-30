@@ -1,6 +1,6 @@
 # Rly Chat
 
-A privacy focused, end to end encrypted chat application built with NextJS, Python, and Redis.
+A privacy focused, end to end encrypted chat application built with NextJS, Python, and Kafka.
 
 Features:
 - No Accounts
@@ -13,6 +13,10 @@ Features:
 ### Client Side Application
 
 Start the client side application with `npm run dev` from the `/client` folder.
+
+### Server Side Application
+
+Start the server with `cargo run` from the `/server` directory.
 
 ## User Flow
 
@@ -31,7 +35,7 @@ Start the client side application with `npm run dev` from the `/client` folder.
 5. Bongo scans it and is redirected to import contact endpoint. JWT is pulled from URL bar and sent to server at `/import_contact`
 6. Contact/Address is decrypted and sent back to Bongo so he can add it to his contact list. The tracked UUID is expired in the DB and the JWT is invalidated.
 7. Bongo now has Nick's "Address" and "Public Key" - He can now chat with Nick.
-8. A redis message is posted to nick, sharing Bongo's address and public key, encrypted with nicks public key - so that nick can get bongo's contact.
+8. A Kafka message is posted to nick, sharing Bongo's address and public key, encrypted with nicks public key - so that nick can get bongo's contact.
 
 **One Existing User**
 1. Nick clicks "share contact".
@@ -52,15 +56,15 @@ Start the client side application with `npm run dev` from the `/client` folder.
 
 [ ] - Build a Python HTTP Server with Fast API
 [ ] - Build a health check route.
-[ ] - Start a Mongo DB to store meta data.
+[ ] - Start a MongoDB to store meta data.
 [ ] - Build a base Beanie Model for database schemas
 [ ] - Create a `register sim` route, which seals the "address" property of the sim in a non-expiring JWT.
 [ ] - Create a `share contact` route, which generates a JWT sealed with the encrypted "address" of the contact.
 [ ] - Create a `add contact` route, which when provided with the JWT expires the shared JWT contact in the database and returns the decrypted "address" of the contact.
 [ ] - Create an `invite_link` flow, similar to the contact flow.
 [ ] - Create chat endpoint
-[ ] - Configure redis relay server to hold and send chats on chat endpoint connections.
+[ ] - Configure Kafka relay server to hold and send chats on chat endpoint connections.
 
-### Redis
+### Kafka 
 
-[ ] - Configure redis container with
+[ ] - Configure kafka container with

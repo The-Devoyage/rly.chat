@@ -1,5 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+#### CLIENT ####
+
 # dependencies
 client/node_modules
 client/.pnp
@@ -33,3 +35,7 @@ client/.vercel
 # typescript
 client/*.tsbuildinfo
 client/next-env.d.ts
+
+#### RUST ####
+server/.env
+server/target

@@ -6,5 +6,5 @@ export default async function ChatPage(props: {
 }) {
   const params = await props.params;
 
-  return <ScrollingChat />;
+  return <ScrollingChat address={params.address} />;
 }

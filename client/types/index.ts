@@ -14,6 +14,16 @@ export interface Sim {
   profile: {
     publicKey: string;
     secretKey: string;
+    address: string;
     contacts: Contact[];
   };
+}
+
+export type Address = string;
+
+export interface Message {
+  sender: Address;
+  receiver: Address;
+  text: string;
+  read: boolean;
 }

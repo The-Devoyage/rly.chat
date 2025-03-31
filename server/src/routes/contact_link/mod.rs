@@ -103,7 +103,12 @@ async fn decrypt_contact_link(req_body: web::Json<DecryptContactLinkBody>) -> im
             return HttpResponse::InternalServerError().body("Failed to get contact.");
         }
     };
-    HttpResponse::Ok().json(contact)
+    let service_response = ServiceResponse {
+        success: true,
+        data: Some(json!(contact)),
+    };
+
+    HttpResponse::Ok().json(service_response)
 }
 
 #[derive(Deserialize, Serialize)]

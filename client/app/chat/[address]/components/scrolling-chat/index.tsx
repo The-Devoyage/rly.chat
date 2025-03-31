@@ -78,25 +78,3 @@ export const ScrollingChat: FC<{ address: Address }> = ({ address }) => {
   );
 };
 
-// const messages = [
-// { identifier: "Stary", message: "Hey this is Stary, how are you?" },
-// { identifier: "Red", message: "I am good, what's up!" },
-// { identifier: "Stary", message: "I am doing well" },
-// { identifier: "Red", message: "Thats great to hear." },
-// {
-//   identifier: "Stary",
-//   message:
-//     "I am just trying to have a nice conversation! Thanks for listenning",
-// },
-// { identifier: "Red", message: "Of course - this iis great!" },
-// { identifier: "Stary", message: "Are you here for anything else?" },
-// { identifier: "Red", message: "Na just want to converse" },
-// { identifier: "Stary", message: "Did you know this is all encrypted?" },
-// { identifier: "Red", message: "Yup thats why I signed up" },
-// {
-//   identifier: "Stary",
-//   message: "Where are the messages and files stored?",
-// },
-// { identifier: "Red", message: "On the IFPS" },
-// { identifier: "Red", message: "On the IFPS" },
-// ];

@@ -9,7 +9,7 @@ export function generateKeyPair() {
   };
 }
 
-export function encryptData(data: Record<string, unknown>, password: string) {
+export function encryptData<T>(data: T, password: string) {
   const key = nacl.hash(naclUtil.decodeUTF8(password)).slice(0, 32);
   const nonce = nacl.randomBytes(24);
 
@@ -25,11 +25,7 @@ export function encryptData(data: Record<string, unknown>, password: string) {
   };
 }
 
-export function decryptData(
-  encryptedData: string,
-  nonce: string,
-  password: string,
-) {
+export function decryptData(encryptedData: string, nonce: string, password: string) {
   const key = nacl.hash(naclUtil.decodeUTF8(password)).slice(0, 32);
 
   // Decode from base64

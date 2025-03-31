@@ -7,6 +7,7 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 export interface Contact {
   name?: string;
   address: string;
+  publicKey: string;
 }
 
 export interface Sim {
@@ -15,7 +16,6 @@ export interface Sim {
     publicKey: string;
     secretKey: string;
     address: string;
-    contacts: Contact[];
   };
 }
 

@@ -1,20 +1,29 @@
 "use client";
 import { GlobalContext } from "@/app/providers";
-import { Sim } from "@/types";
-import { useContext, useEffect, useState } from "react";
+import { Address, Contact, Sim } from "@/types";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { decryptData } from "./encryption";
 import { useRouter } from "next/navigation";
+import { selectContacts } from "@/idb/contacts";
 
-export const useSim = (requestUnlock = true) => {
+export const useSim = (requestUnlock = true, fetchContacts = false) => {
   const [sim, setSim] = useState<Sim | null>(null);
   const [identifier, setIdentifier] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const { simPassword, setRequestSimPassword, setSimPassword } =
-    useContext(GlobalContext);
+  const { simPassword, setRequestSimPassword, setSimPassword } = useContext(GlobalContext);
   const router = useRouter();
+  const [contacts, setContacts] = useState<Contact[] | null>(null);
+
+  const handleGetContacts = useCallback(
+    async (address: Address, password: string) => {
+      const contacts = await selectContacts(address, password);
+      return contacts;
+    },
+    [sim, simPassword],
+  );
 
   useEffect(() => {
-    const getSim = () => {
+    const getSim = async () => {
       try {
         const storedSim = window.localStorage.getItem("sim");
 
@@ -49,6 +58,13 @@ export const useSim = (requestUnlock = true) => {
           identifier: simData["identifier"],
           profile,
         };
+
+        // Fetch Contacts
+        if (fetchContacts) {
+          const contacts = await handleGetContacts(sim.profile.address, simPassword);
+          setContacts(contacts);
+        }
+
         setSim(sim);
         setLoading(false);
       } catch (err) {
@@ -59,7 +75,6 @@ export const useSim = (requestUnlock = true) => {
       }
     };
 
-    // Listen for localStorage changes from other tabs/windows
     window.addEventListener("storage", getSim);
 
     getSim();
@@ -74,5 +89,5 @@ export const useSim = (requestUnlock = true) => {
     router.push("/");
   };
 
-  return { sim, loading, identifier, handleLock };
+  return { sim, loading, identifier, handleLock, contacts };
 };

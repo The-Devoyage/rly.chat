@@ -51,7 +51,7 @@ export const ShareContactButton: FC<ButtonProps> = ({ ...props }) => {
         </ModalContent>
       </Modal>
       <Button size="sm" color="primary" onPress={handleCreate} {...props}>
-        Share Contact
+        Share
       </Button>
     </>
   );

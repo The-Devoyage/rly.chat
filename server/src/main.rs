@@ -1,3 +1,4 @@
+use actix_cors::Cors;
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
 use environment::Environment;
 use routes::{chat, contact_link};
@@ -29,7 +30,14 @@ async fn main() -> std::io::Result<()> {
     log::info!("RLY Backend Started");
 
     HttpServer::new(|| {
+        let cors = Cors::default()
+            .allow_any_origin()
+            .allow_any_method()
+            .allow_any_header()
+            .allowed_origin("http://localhost:3000");
+
         App::new()
+            .wrap(cors)
             .route("/chat", web::get().to(chat::chat))
             .service(hello)
             .service(contact_link::encrypt_contact_link)

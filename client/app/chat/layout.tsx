@@ -1,10 +1,6 @@
-import { Button } from "@heroui/button";
+import { ShareContactButton } from "./components/share-contact-button";
 
-export default function CreateSimLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function CreateSimLayout({ children }: { children: React.ReactNode }) {
   return (
     <section
       className="flex flex-col gap-4 w-full justify-between"
@@ -14,9 +10,7 @@ export default function CreateSimLayout({
     >
       <div className="flex gap-4 p-4 border border-sm rounded border-orange-500 justify-between items-center">
         Chat
-        <Button size="sm" color="primary">
-          Share Contact
-        </Button>
+        <ShareContactButton />
       </div>
       {children}
     </section>

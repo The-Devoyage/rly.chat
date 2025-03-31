@@ -68,9 +68,25 @@ struct DecryptContactLinkBody {
 
 #[post("/contact-link/decrypt")]
 async fn decrypt_contact_link(req_body: web::Json<DecryptContactLinkBody>) -> impl Responder {
+    let bytes = match general_purpose::URL_SAFE.decode(&req_body.token) {
+        Ok(b) => b,
+        Err(err) => {
+            log::error!("Failed to decode base64 token: {err}");
+            return HttpResponse::InternalServerError().body("Failed to decode base64 token.");
+        }
+    };
+
+    let token = match String::from_utf8(bytes) {
+        Ok(t) => t,
+        Err(err) => {
+            log::error!("Failed to convert token: {err}");
+            return HttpResponse::InternalServerError().body("Failed to convert token.");
+        }
+    };
+
     // Validate the token
     let jwt = match decode::<Claims>(
-        &req_body.token,
+        &token,
         &DecodingKey::from_secret(&std::env::var("SHARE_CONTACT_JWT_SECRET").unwrap().as_ref()),
         &Validation::default(),
     ) {
@@ -134,6 +150,8 @@ async fn encrypt_contact_link(req_body: web::Json<EncryptContactLinkBody>) -> im
             return HttpResponse::InternalServerError().body("Failed to create token.");
         }
     };
+
+    let token = general_purpose::URL_SAFE.encode(token);
 
     let response = ServiceResponse {
         data: Some(json!({ "token": token })),

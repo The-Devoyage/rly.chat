@@ -27,3 +27,8 @@ export interface Message {
   text: string;
   read: boolean;
 }
+
+export interface ServiceResponse<T extends Record<string, unknown>> {
+  success: boolean;
+  data?: T;
+}

@@ -23,6 +23,7 @@ export const ShareContactButton: FC<ShareContactButtonProps> = ({ sim, ...props 
     const res = await getContactLink({
       address: sim.profile.address,
       publicKey: sim.profile.publicKey,
+      identifier: sim.identifier,
     });
 
     if (res && res.data?.token)

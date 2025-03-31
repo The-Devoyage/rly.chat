@@ -9,15 +9,17 @@ export default async function ImportContactPage(props: {
   const searchParams = await props.searchParams;
   const contact = await getContact({ token: searchParams.token as string });
 
-  console.log(contact);
-
   if (!contact || !contact.data) {
     return "AWE";
   }
 
   return (
     <ImportContactForm
-      contact={{ address: contact.data.address, publicKey: contact.data.public_key }}
+      contact={{
+        address: contact.data.address,
+        publicKey: contact.data.public_key,
+        identifier: contact.data.identifier,
+      }}
     />
   );
 }

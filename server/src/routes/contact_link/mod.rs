@@ -115,6 +115,7 @@ async fn decrypt_contact_link(req_body: web::Json<DecryptContactLinkBody>) -> im
 struct EncryptContactLinkBody {
     pub address: String,
     pub public_key: String,
+    pub identifier: String,
 }
 
 #[post("/contact-link/encrypt")]

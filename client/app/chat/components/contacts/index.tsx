@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ShareContactButton } from "../share-contact-button";
 import Link from "next/link";
+import { Button } from "@heroui/button";
 
 export const Contacts = () => {
   const { sim, loading, contacts } = useSim(true, true);
@@ -34,6 +35,15 @@ export const Contacts = () => {
 
   return (
     <div>
+      <div className="flex justify-between items-center mb-4">
+        Contacts
+        <div className="flex gap-2">
+          <Button size="sm" color="secondary" variant="ghost">
+            Export
+          </Button>
+          <ShareContactButton sim={sim} />
+        </div>
+      </div>
       {contacts.map((c, i) => (
         <Link href={`/chat/${c.address}`} key={c.address}>
           <div className="hover:bg-gray-100 dark:hover:bg-slate-700 transition-all rounded">

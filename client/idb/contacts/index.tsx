@@ -4,8 +4,24 @@ import { decryptData, encryptData } from "@/utils/encryption";
 
 export async function insertContact(address: Address, contact: Contact, password: string) {
   const encryptedContact = encryptData<Contact>(contact, password);
-  const db = await openUserDB(address);
-  await db.put("contacts", encryptedContact);
+
+  try {
+    const db = await openUserDB(address);
+
+    //Verify encrypted contacts are unique
+    const contacts = await selectContacts(address, password);
+
+    console.log(contacts, address)
+
+    if (contacts.findIndex((c) => c.address === contact.address) >= 0) {
+      throw new Error("Contact already exists.");
+    }
+
+    await db.put("contacts", encryptedContact);
+  } catch (err) {
+    console.error(err);
+    window.alert(err);
+  }
 }
 
 export async function selectContacts(address: Address, password: string) {

@@ -10,9 +10,9 @@ import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
 import { FC, useContext } from "react";
 
-export const ImportContactForm: FC<{ contact: { address: string; publicKey: string } }> = ({
-  contact,
-}) => {
+export const ImportContactForm: FC<{
+  contact: { address: string; publicKey: string; identifier: string };
+}> = ({ contact }) => {
   const { simPassword } = useContext(GlobalContext);
   const { sim } = useSim(true);
   const router = useRouter();
@@ -56,6 +56,7 @@ export const ImportContactForm: FC<{ contact: { address: string; publicKey: stri
           name="name"
           placeholder="Contact Name"
           type="text"
+          defaultValue={contact.identifier}
         />
         <Button className="w-full" type="submit" color="primary">
           Submit

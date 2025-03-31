@@ -1,11 +1,16 @@
 import { Address, ServiceResponse } from "@/types";
 import apiClient from "..";
 
-export const getContactLink = async (payload: { address: Address; publicKey: string }) => {
+export const getContactLink = async (payload: {
+  address: Address;
+  publicKey: string;
+  identifier: string;
+}) => {
   try {
     const res = await apiClient.post<ServiceResponse<{ token: string }>>("/contact-link/encrypt", {
       address: payload.address,
       public_key: payload.publicKey,
+      identifier: payload.identifier,
     });
     return res.data;
   } catch (err) {

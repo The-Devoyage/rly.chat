@@ -1,7 +1,7 @@
 "use client";
 
 import { getContactLink } from "@/api/getContactLink";
-import { useSim } from "@/utils/useSim";
+import { Sim } from "@/types";
 import { Alert } from "@heroui/alert";
 import { Button, ButtonProps } from "@heroui/button";
 import { Input } from "@heroui/input";
@@ -9,8 +9,11 @@ import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
 import { FC, useState } from "react";
 import QRCode from "react-qr-code";
 
-export const ShareContactButton: FC<ButtonProps> = ({ ...props }) => {
-  const { sim } = useSim(true);
+interface ShareContactButtonProps extends ButtonProps {
+  sim: Sim;
+}
+
+export const ShareContactButton: FC<ShareContactButtonProps> = ({ sim, ...props }) => {
   const [link, setLink] = useState<string | null>(null);
 
   const handleCreate = async () => {

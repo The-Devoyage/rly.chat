@@ -27,7 +27,7 @@ export const Contacts = () => {
         <p className="w-96 text-center">
           No One's Here - Share your contact information to get started.
         </p>
-        <ShareContactButton variant="bordered" />
+        <ShareContactButton variant="bordered" sim={sim} />
       </div>
     );
   }

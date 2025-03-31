@@ -1,5 +1,4 @@
-
-export default function CreateSimLayout({ children }: { children: React.ReactNode }) {
+export default function ChatLayout({ children }: { children: React.ReactNode }) {
   return (
     <section
       className="flex flex-col gap-4 w-full justify-between"

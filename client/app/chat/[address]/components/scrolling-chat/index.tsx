@@ -11,20 +11,26 @@ import dayjs from "dayjs";
 import { GlobalContext } from "@/app/providers";
 import { Address } from "@/types";
 import { useSim } from "@/utils/useSim";
+import { Button } from "@heroui/button";
 
 export const ScrollingChat: FC<{ address: Address }> = ({ address }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const messageRef = useRef<HTMLDivElement>(null);
   const { getMessages, sendMessage } = useContext(GlobalContext);
   const messages = getMessages(address);
-  const { sim, identifier } = useSim();
-  const chattingWith = sim?.profile.contacts.find((c) => c.address === address);
+  const { sim, identifier, contacts } = useSim(true, true);
+  const chattingWith = contacts?.find((c) => c.address === address);
   const [message, setMessage] = useState("");
+  const [maxRows, setMaxRows] = useState<number | undefined>(1);
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollIntoView({ behavior: "smooth" });
+    if (messageRef.current) {
+      messageRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, []);
+
+  const handleSendMessage = () => {
+    sendMessage("HEY!");
+  };
 
   return (
     <ScrollShadow
@@ -34,8 +40,14 @@ export const ScrollingChat: FC<{ address: Address }> = ({ address }) => {
       isEnabled={messages.length > 4}
     >
       {!messages.length && (
-        <div className="text-center">
-          <h1>No Messages Found</h1>
+        <div className="flex items-center justify-center gap-8 p-8 border border-orange-500 rounded text-center h-96">
+          <Avatar
+            name={chattingWith?.name || "User"}
+            variant="beam"
+            colors={AVATAR_COLORS}
+            className="h-40 w-40"
+          />
+          <h1 className="text-2xl">No Messages Found! Say hello to {chattingWith?.name}!</h1>
         </div>
       )}
       {messages.map((m, index) => (
@@ -45,7 +57,7 @@ export const ScrollingChat: FC<{ address: Address }> = ({ address }) => {
             "bg-transparent shadow-none": m.sender !== sim?.profile.address,
           })}
           style={{ maxWidth: 500 }}
-          ref={index === messages.length - 1 ? ref : undefined}
+          ref={index === messages.length - 1 ? messageRef : undefined}
         >
           <Avatar
             name={m.sender === address ? chattingWith?.name || "User" : identifier || "Me"}
@@ -64,17 +76,28 @@ export const ScrollingChat: FC<{ address: Address }> = ({ address }) => {
           </div>
         </Card>
       ))}
-      <div className="mt-2 sticky -bottom-0.5">
+      <div
+        className={clsx(
+          "flex gap-1 items-end mt-2 sticky -bottom-0.5 bg-zinc-800 rounded p-4",
+          maxRows ? "flex-row" : "flex-col",
+        )}
+      >
         <Textarea
+          onFocusChange={(focused) => setMaxRows(focused ? undefined : 1)}
           placeholder="Your message..."
           onChange={(e) => setMessage(e.currentTarget.value)}
           value={message}
-          onKeyUp={(e) => {if(e.key === "Enter") {
-            sendMessage("HEY!")
-          }}}
+          maxRows={maxRows}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              handleSendMessage();
+            }
+          }}
         />
+        <Button color="primary" onPress={handleSendMessage} variant="bordered">
+          Send
+        </Button>
       </div>
     </ScrollShadow>
   );
 };
-

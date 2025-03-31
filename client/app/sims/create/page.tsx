@@ -31,7 +31,6 @@ export default function CreateSimPage() {
 
     const keyPair = generateKeyPair();
     const rawSim: Sim = { identifier, profile: { ...keyPair, address: v4() } };
-    console.log("RAW SIM", rawSim);
     const profile = encryptData(rawSim.profile, password);
 
     const protectedSim = {

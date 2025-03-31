@@ -11,8 +11,6 @@ export async function insertContact(address: Address, contact: Contact, password
     //Verify encrypted contacts are unique
     const contacts = await selectContacts(address, password);
 
-    console.log(contacts, address)
-
     if (contacts.findIndex((c) => c.address === contact.address) >= 0) {
       throw new Error("Contact already exists.");
     }

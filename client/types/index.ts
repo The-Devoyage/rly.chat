@@ -25,10 +25,10 @@ export interface Message {
   sender: Address;
   receiver: Address;
   text: string;
-  read: boolean;
 }
 
 export interface ServiceResponse<T extends Record<string, unknown>> {
   success: boolean;
   data?: T;
 }
+

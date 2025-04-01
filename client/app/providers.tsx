@@ -7,8 +7,9 @@ import { HeroUIProvider } from "@heroui/system";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { createContext } from "react";
-import useWebSocket, { SendMessage } from "react-use-websocket";
-import { Address, Message } from "@/types";
+import useWebSocket from "react-use-websocket";
+import { Address, EncryptedMessage, Message } from "@/types";
+import { SendJsonMessage } from "react-use-websocket/dist/lib/types";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -27,7 +28,7 @@ interface GlobalContext {
   requestSimPassword: boolean;
   setRequestSimPassword: React.Dispatch<React.SetStateAction<boolean>>;
   getMessages: (address: Address) => Message[];
-  sendMessage: SendMessage;
+  sendJsonMessage: SendJsonMessage;
 }
 
 export const GlobalContext = createContext<GlobalContext>({
@@ -36,17 +37,17 @@ export const GlobalContext = createContext<GlobalContext>({
   requestSimPassword: false,
   setRequestSimPassword: () => null,
   getMessages: () => [],
-  sendMessage: () => null,
+  sendJsonMessage: () => null,
 });
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
   const [simPassword, setSimPassword] = React.useState<string | null>(null);
   const [requestSimPassword, setRequestSimPassword] = React.useState(false);
-  const [messages, setMessages] = React.useState<Message[]>([]);
+  const [messages, setMessages] = React.useState<EncryptedMessage[]>([]);
 
-  const { sendMessage } = useWebSocket<Message>(process.env.NEXT_PUBLIC_SOCKET_URL!, {
-    onMessage: (message) => {
+  const { sendJsonMessage } = useWebSocket<EncryptedMessage>(process.env.NEXT_PUBLIC_SOCKET_URL!, {
+    onMessage: (message: MessageEvent<EncryptedMessage>) => {
       console.log("MESSAGE", message);
       setMessages((curr) => [...curr, message.data]);
     },
@@ -67,7 +68,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
       requestSimPassword,
       setRequestSimPassword,
       getMessages,
-      sendMessage,
+      sendJsonMessage,
     }),
     [simPassword, requestSimPassword],
   );

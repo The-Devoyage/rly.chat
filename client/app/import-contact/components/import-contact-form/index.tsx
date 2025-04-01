@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { FC, useContext } from "react";
 
 export const ImportContactForm: FC<{
-  contact: { address: string; publicKey: string; identifier: string };
+  contact: { address: string; publicKey: string; identifier: string; uuid: string };
 }> = ({ contact }) => {
   const { simPassword } = useContext(GlobalContext);
   const { sim } = useSim(true);
@@ -19,9 +19,10 @@ export const ImportContactForm: FC<{
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if(!sim || !simPassword) return
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
-    await insertContact(sim?.profile.address!, { ...contact, name }, simPassword!);
+    await insertContact(sim.uuid, { ...contact, name }, simPassword);
     router.push("/chat");
   };
 

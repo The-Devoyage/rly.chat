@@ -30,11 +30,11 @@ export default function CreateSimPage() {
     setSimPassword(password);
 
     const keyPair = generateKeyPair();
-    const rawSim: Sim = { identifier, profile: { ...keyPair, address: v4() } };
-    const profile = encryptData(rawSim.profile, password);
 
+    const rawSim: Sim = { uuid: v4(), identifier, profile: { ...keyPair, address: v4() } };
+    const profile = encryptData(rawSim.profile, password);
     const protectedSim = {
-      identifier,
+      ...rawSim,
       profile,
     };
 
@@ -43,7 +43,6 @@ export default function CreateSimPage() {
     );
 
     if (c) {
-      // Save to localStorage (optional)
       localStorage.setItem("sim", JSON.stringify(protectedSim));
 
       // Convert SIM object to JSON string

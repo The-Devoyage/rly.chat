@@ -1,6 +1,6 @@
 "use client";
 import { GlobalContext } from "@/app/providers";
-import { Address, Contact, Sim } from "@/types";
+import { Contact, Sim } from "@/types";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { decryptData } from "./encryption";
 import { useRouter } from "next/navigation";
@@ -15,8 +15,8 @@ export const useSim = (requestUnlock = true, fetchContacts = false) => {
   const [contacts, setContacts] = useState<Contact[] | null>(null);
 
   const handleGetContacts = useCallback(
-    async (address: Address, password: string) => {
-      const contacts = await selectContacts(address, password);
+    async (simUuid: string, password: string) => {
+      const contacts = await selectContacts(simUuid, password);
       return contacts;
     },
     [sim, simPassword],
@@ -55,13 +55,13 @@ export const useSim = (requestUnlock = true, fetchContacts = false) => {
         const profile = decryptData(encryptedData, nonce, simPassword);
 
         const sim: Sim = {
-          identifier: simData["identifier"],
+          ...simData,
           profile,
         };
 
         // Fetch Contacts
         if (fetchContacts) {
-          const contacts = await handleGetContacts(sim.profile.address, simPassword);
+          const contacts = await handleGetContacts(sim.uuid, simPassword);
           setContacts(contacts);
         }
 

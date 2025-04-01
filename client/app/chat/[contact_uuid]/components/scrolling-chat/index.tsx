@@ -3,22 +3,20 @@ import { FC, useContext, useEffect, useRef, useState } from "react";
 import { Textarea } from "@heroui/input";
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import clsx from "clsx";
-import Avatar from "boring-avatars";
-import { AVATAR_COLORS } from "@/utils/constants";
 import { GlobalContext } from "@/app/providers";
-import { Address, Message } from "@/types";
+import { EncryptedMessage, SimUuid } from "@/types";
 import { useSim } from "@/utils/useSim";
 import { Button } from "@heroui/button";
-import nacl from "tweetnacl";
-import naclUtil from "tweetnacl-util";
 import { ChatMessage } from "./components";
+import { encryptMessage } from "@/utils/encryption";
+import { insertMessage } from "@/idb/message";
 
-export const ScrollingChat: FC<{ address: Address }> = ({ address }) => {
+export const ScrollingChat: FC<{ simUuid: SimUuid }> = ({ simUuid }) => {
   const messageRef = useRef<HTMLDivElement>(null);
-  const { getMessages, sendMessage } = useContext(GlobalContext);
-  const messages = getMessages(address);
+  const { getMessages, sendJsonMessage } = useContext(GlobalContext);
+  const messages = getMessages("ABCDEF"); //TODO: FIx this
   const { sim, identifier, contacts } = useSim(true, true);
-  const chattingWith = contacts?.find((c) => c.address === address);
+  const chattingWith = contacts?.find((c) => c.uuid === simUuid);
   const [message, setMessage] = useState("");
   const [maxRows, setMaxRows] = useState<number | undefined>(1);
 
@@ -28,43 +26,25 @@ export const ScrollingChat: FC<{ address: Address }> = ({ address }) => {
     }
   }, []);
 
-  function encryptMessage(recipientPublicKey: string, senderSecretKey: string) {
-    const messageUint8 = naclUtil.decodeUTF8(message);
-    const nonce = nacl.randomBytes(nacl.box.nonceLength);
-
-    console.log(recipientPublicKey);
-
-    const publicKey = naclUtil.decodeBase64(recipientPublicKey);
-    const privateKey = naclUtil.decodeBase64(senderSecretKey);
-
-    // Encrypt using sender's private key and recipient's public key
-    const encryptedMessage = nacl.box(messageUint8, nonce, publicKey, privateKey);
-
-    return {
-      encryptedMessage: naclUtil.encodeBase64(encryptedMessage),
-      nonce: naclUtil.encodeBase64(nonce),
-    };
-  }
-
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!sim || !chattingWith) return;
 
-    const recipientText = encryptMessage(chattingWith.publicKey, sim.profile.secretKey);
-    const senderText = encryptMessage(sim.profile.publicKey, sim.profile.secretKey);
+    const recipientText = encryptMessage(chattingWith.publicKey, sim.profile.secretKey, message);
+    const senderText = encryptMessage(sim.profile.publicKey, sim.profile.secretKey, message);
 
-    const recipientMessage: Message = {
-      sender: sim.profile.address,
-      receiver: chattingWith.address,
-      text: JSON.stringify(recipientText),
+    const send: EncryptedMessage = {
+      conversation: sim.uuid,
+      ...recipientText,
     };
 
-    const senderMessage: Message = {
-      sender: sim.profile.address,
-      receiver: sim.profile.address,
-      text: JSON.stringify(senderText),
+    const store: EncryptedMessage = {
+      conversation: chattingWith.uuid,
+      ...senderText,
     };
 
-    sendMessage("HEY!");
+    await insertMessage(sim.uuid, store);
+
+    sendJsonMessage(send);
   };
 
   if (!chattingWith || !identifier) return null;
@@ -85,8 +65,8 @@ export const ScrollingChat: FC<{ address: Address }> = ({ address }) => {
       )}
       {messages.map((m, index) => (
         <ChatMessage
-          isSender={address === m.sender}
-          senderIdentifier={m.sender === address ? chattingWith.name! : identifier}
+          isSender={simUuid === m.from}
+          senderIdentifier={simUuid === m.from ? chattingWith.name! : identifier}
           text={m.text}
           ref={index === messages.length - 1 ? messageRef : undefined}
         />
@@ -104,12 +84,15 @@ export const ScrollingChat: FC<{ address: Address }> = ({ address }) => {
           value={message}
           maxRows={maxRows}
           onKeyUp={(e) => {
-            if (e.key === "Enter") {
+            e.preventDefault();
+            if (e.key === "Enter" && !e.shiftKey) {
               handleSendMessage();
+              setMessage("");
+              setMaxRows(1);
             }
           }}
         />
-        <Button color="primary" onPress={handleSendMessage} variant="bordered">
+        <Button color="primary" onPress={handleSendMessage}>
           Send
         </Button>
       </div>

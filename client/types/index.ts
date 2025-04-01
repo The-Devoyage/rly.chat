@@ -1,34 +1,45 @@
 import { SVGProps } from "react";
 
+export type SimUuid = string;
+export type Address = string;
+export type PublicKey = string;
+export type SecretKey = string;
+export type Identifier = string;
+
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
 };
 
 export interface Contact {
+  uuid: SimUuid;
+  address: Address;
+  publicKey: PublicKey;
   name?: string;
-  address: string;
-  publicKey: string;
 }
 
 export interface Sim {
-  identifier: string;
+  uuid: SimUuid;
+  identifier: Identifier;
   profile: {
-    publicKey: string;
-    secretKey: string;
-    address: string;
+    secretKey: SecretKey;
+    publicKey: PublicKey;
+    address: Address;
   };
 }
 
-export type Address = string;
-
 export interface Message {
-  sender: Address;
-  receiver: Address;
+  to: SimUuid;
+  from: SimUuid;
   text: string;
+}
+
+export interface EncryptedMessage {
+  conversation: SimUuid;
+  encryptedMessage: string;
+  nonce: string;
 }
 
 export interface ServiceResponse<T extends Record<string, unknown>> {
   success: boolean;
   data?: T;
 }
-

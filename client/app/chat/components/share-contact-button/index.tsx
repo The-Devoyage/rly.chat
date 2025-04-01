@@ -21,6 +21,7 @@ export const ShareContactButton: FC<ShareContactButtonProps> = ({ sim, ...props 
       return window.alert("Sim not found!");
     }
     const res = await getContactLink({
+      uuid: sim.uuid,
       address: sim.profile.address,
       publicKey: sim.profile.publicKey,
       identifier: sim.identifier,
@@ -55,7 +56,7 @@ export const ShareContactButton: FC<ShareContactButtonProps> = ({ sim, ...props 
         </ModalContent>
       </Modal>
       <Button size="sm" color="primary" onPress={handleCreate} {...props}>
-        Share
+        Share Contact
       </Button>
     </>
   );

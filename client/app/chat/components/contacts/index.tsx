@@ -26,7 +26,7 @@ export const Contacts = () => {
       <div className="flex flex-col gap-4 items-center justify-center h-96">
         <BoringAvatar name="Boakley" className="w-20 h-20" variant="beam" colors={AVATAR_COLORS} />
         <p className="w-96 text-center">
-          No One's Here - Share your contact information to get started.
+          No One's Here. Share your contact information to get started.
         </p>
         <ShareContactButton variant="bordered" sim={sim} />
       </div>
@@ -45,7 +45,7 @@ export const Contacts = () => {
         </div>
       </div>
       {contacts.map((c, i) => (
-        <Link href={`/chat/${c.address}`} key={c.address}>
+        <Link href={`/chat/${c.uuid}`} key={c.uuid}>
           <div className="hover:bg-gray-100 dark:hover:bg-slate-700 transition-all rounded">
             <div className="flex p-2 gap-4 mb-2 justify-center items-center">
               <BoringAvatar

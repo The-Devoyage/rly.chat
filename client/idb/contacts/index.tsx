@@ -1,34 +1,33 @@
-import { Address, Contact } from "@/types";
+import { Contact, SimUuid } from "@/types";
 import { openUserDB } from "..";
 import { decryptData, encryptData } from "@/utils/encryption";
 
-export async function insertContact(address: Address, contact: Contact, password: string) {
+export async function insertContact(simUuid: SimUuid, contact: Contact, password: string) {
   const encryptedContact = encryptData<Contact>(contact, password);
 
   try {
-    const db = await openUserDB(address);
-
-    //Verify encrypted contacts are unique
-    const contacts = await selectContacts(address, password);
-
-    if (contacts.findIndex((c) => c.address === contact.address) >= 0) {
-      throw new Error("Contact already exists.");
-    }
-
-    await db.put("contacts", encryptedContact);
+    const db = await openUserDB(simUuid);
+    await db.put("contacts", { uuid: contact.uuid, ...encryptedContact });
   } catch (err) {
     console.error(err);
     window.alert(err);
+    throw new Error("Failed to insert contact.");
   }
 }
 
-export async function selectContacts(address: Address, password: string) {
-  const db = await openUserDB(address);
-  const encryptedContacts = await db.getAll("contacts");
-  const decrypted = [];
-  for (const c of encryptedContacts) {
-    const contact = decryptData(c.encryptedData, c.nonce, password);
-    decrypted.push(contact);
+export async function selectContacts(simUuid: SimUuid, password: string): Promise<Contact[]> {
+  const db = await openUserDB(simUuid);
+  try {
+    const encryptedContacts = await db.getAll("contacts");
+    const decrypted = [];
+    for (const c of encryptedContacts) {
+      const contact = decryptData(c.encryptedData, c.nonce, password);
+      decrypted.push(contact);
+    }
+    return decrypted;
+  } catch (err) {
+    console.error(err);
+    window.alert(err);
+    throw new Error("Failed to select contacts.");
   }
-  return decrypted;
 }

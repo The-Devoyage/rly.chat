@@ -7,13 +7,14 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useContext } from "react";
 import { v4 } from "uuid";
 
 export default function CreateSimPage() {
   const router = useRouter();
   const { setSimPassword } = useContext(GlobalContext);
+  const searchQuery = useSearchParams();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,6 +64,11 @@ export default function CreateSimPage() {
       URL.revokeObjectURL(url);
 
       window.dispatchEvent(new Event("storage"));
+
+      const redirectUri = searchQuery.get("redirect_uri");
+      if (redirectUri) {
+        return router.push(redirectUri);
+      }
       router.push("/chat");
     }
   };

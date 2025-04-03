@@ -3,23 +3,12 @@
 import { AVATAR_COLORS } from "@/utils/constants";
 import { useSim } from "@/utils/useSim";
 import BoringAvatar from "boring-avatars";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { ShareContactButton } from "../share-contact-button";
 import Link from "next/link";
 import { Button } from "@heroui/button";
 
 export const Contacts = () => {
-  const { sim, loading, contacts } = useSim(true, true);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!sim && !loading) {
-      router.push("/sims");
-    }
-  }, [sim]);
-
-  if (!sim) return null;
+  const { sim, contacts } = useSim(true, true);
 
   if (!contacts?.length) {
     return (
@@ -28,7 +17,7 @@ export const Contacts = () => {
         <p className="w-96 text-center">
           No One's Here. Share your contact information to get started.
         </p>
-        <ShareContactButton variant="bordered" sim={sim} />
+        <ShareContactButton variant="bordered" sim={sim!} />
       </div>
     );
   }
@@ -41,7 +30,7 @@ export const Contacts = () => {
           <Button size="sm" color="secondary" variant="ghost">
             Export
           </Button>
-          <ShareContactButton sim={sim} />
+          <ShareContactButton sim={sim!} />
         </div>
       </div>
       {contacts.map((c, i) => (

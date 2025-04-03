@@ -6,11 +6,12 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useContext } from "react";
 
 export default function LoadSimPage() {
   const router = useRouter();
+  const searchQuery = useSearchParams();
   const { setSimPassword } = useContext(GlobalContext);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,6 +45,11 @@ export default function LoadSimPage() {
 
         localStorage.setItem("sim", JSON.stringify(simData));
         window.dispatchEvent(new Event("storage"));
+
+        const redirectUri = searchQuery.get("redirect_uri");
+        if (redirectUri) {
+          return router.push(redirectUri);
+        }
         router.push("/chat");
       } catch (error) {
         console.error("Error decrypting SIM:", error);
@@ -56,11 +62,7 @@ export default function LoadSimPage() {
 
   return (
     <div className="flex gap-4 flex-col p-4 border border-sm rounded border-orange-500">
-      <Alert
-        color="primary"
-        description="Load a SIM and start chatting."
-        className="text-left"
-      />
+      <Alert color="primary" description="Load a SIM and start chatting." className="text-left" />
       <Form onSubmit={handleSubmit}>
         <Input
           isRequired

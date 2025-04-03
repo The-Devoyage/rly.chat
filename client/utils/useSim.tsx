@@ -3,7 +3,7 @@ import { GlobalContext } from "@/app/providers";
 import { Contact, Sim } from "@/types";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { decryptData } from "./encryption";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { selectContacts } from "@/idb/contacts";
 
 export const useSim = (requestUnlock = true, fetchContacts = false) => {
@@ -12,6 +12,8 @@ export const useSim = (requestUnlock = true, fetchContacts = false) => {
   const [loading, setLoading] = useState(true);
   const { simPassword, setRequestSimPassword, setSimPassword } = useContext(GlobalContext);
   const router = useRouter();
+  const pathname = usePathname();
+  const searchQuery = useSearchParams();
   const [contacts, setContacts] = useState<Contact[] | null>(null);
 
   const handleGetContacts = useCallback(
@@ -28,10 +30,16 @@ export const useSim = (requestUnlock = true, fetchContacts = false) => {
         const storedSim = window.localStorage.getItem("sim");
 
         if (!storedSim && requestUnlock) {
+          console.log("CREAT SIME")
           setIdentifier(null);
-          router.push("/sims");
+          window.alert("Create a SIM first!");
+          router.push(
+            `/sims?redirect_uri=${process.env.NEXT_PUBLIC_CLIENT_URL}${pathname}?${searchQuery.toString()}`,
+          );
           return;
         }
+
+        console.log("AUTHENTICATING", storedSim)
 
         const simData = JSON.parse(storedSim!);
 

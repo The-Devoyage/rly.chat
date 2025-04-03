@@ -1,7 +1,8 @@
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Image } from "@heroui/image";
-import { Button } from "@heroui/button";
 import { Alert } from "@heroui/alert";
+import { CreateSimButton } from "./components";
+import { MountSimButton } from "./components/mount-sim-button";
 
 export default function MountSimPage() {
   return (
@@ -25,9 +26,7 @@ export default function MountSimPage() {
           </CardBody>
           <CardFooter className="text-small justify-between">
             <b>New SIM</b>
-            <Button radius="sm" href="/sims/create" as="a">
-              Create
-            </Button>
+            <CreateSimButton />
           </CardFooter>
         </Card>
         <Card className="w-full">
@@ -43,9 +42,7 @@ export default function MountSimPage() {
           </CardBody>
           <CardFooter className="text-small justify-between">
             <b>Mount SIM</b>
-            <Button radius="sm" href="/sims/mount" as="a">
-              Mount
-            </Button>
+            <MountSimButton />
           </CardFooter>
         </Card>
       </div>

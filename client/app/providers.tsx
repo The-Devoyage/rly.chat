@@ -27,7 +27,7 @@ interface GlobalContext {
   setSimPassword: React.Dispatch<React.SetStateAction<string | null>>;
   requestSimPassword: boolean;
   setRequestSimPassword: React.Dispatch<React.SetStateAction<boolean>>;
-  getMessages: (address: Address) => Message[];
+  getMessages: (conversation: SimUuid) => EncryptedMessage[];
   sendJsonMessage: SendJsonMessage;
 }
 

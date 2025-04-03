@@ -40,7 +40,11 @@ export function decryptData(encryptedData: string, nonce: string, password: stri
   return JSON.parse(decryptedString);
 }
 
-export function encryptMessage(recipientPublicKey: string, senderSecretKey: string, message: string) {
+export function encryptMessage(
+  recipientPublicKey: string,
+  senderSecretKey: string,
+  message: string,
+) {
   const messageUint8 = naclUtil.decodeUTF8(message);
   const nonce = nacl.randomBytes(nacl.box.nonceLength);
 
@@ -53,4 +57,25 @@ export function encryptMessage(recipientPublicKey: string, senderSecretKey: stri
     encryptedMessage: naclUtil.encodeBase64(encryptedMessage),
     nonce: naclUtil.encodeBase64(nonce),
   };
+}
+
+export function decryptMessage(
+  senderPublicKey: string,
+  recipientSecretKey: string,
+  encryptedMessage: string,
+  nonce: string,
+) {
+  const messageUint8 = naclUtil.decodeBase64(encryptedMessage);
+  const nonceUint8 = naclUtil.decodeBase64(nonce);
+
+  const publicKey = naclUtil.decodeBase64(senderPublicKey);
+  const privateKey = naclUtil.decodeBase64(recipientSecretKey);
+
+  const decryptedMessage = nacl.box.open(messageUint8, nonceUint8, publicKey, privateKey);
+
+  if (!decryptedMessage) {
+    throw new Error("Decryption failed");
+  }
+
+  return naclUtil.encodeUTF8(decryptedMessage);
 }

@@ -35,7 +35,8 @@ export interface Message {
 
 export interface EncryptedMessage {
   conversation: SimUuid;
-  encryptedMessage: string;
+  address: Address | null;
+  encryptedMessage: string; // JSON<Message>
   nonce: string;
 }
 

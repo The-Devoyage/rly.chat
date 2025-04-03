@@ -31,3 +31,20 @@ export async function selectContacts(simUuid: SimUuid, password: string): Promis
     throw new Error("Failed to select contacts.");
   }
 }
+
+export async function selectContact(
+  simUuid: SimUuid,
+  conversation: SimUuid,
+  password: string,
+): Promise<Contact> {
+  const db = await openUserDB(simUuid);
+  try {
+    const encryptedContact = await db.get("contacts", conversation);
+    const contact = decryptData(encryptedContact.encryptedData, encryptedContact.nonce, password);
+    return contact;
+  } catch (err) {
+    console.error(err);
+    window.alert(err);
+    throw new Error("Failed to select contacts.");
+  }
+}

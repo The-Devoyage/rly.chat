@@ -17,10 +17,12 @@ export const ChatMessage = forwardRef<
       className={clsx("p-4 flex flex-row gap-4 my-2", {
         "bg-transparent shadow-none": isSender,
       })}
-      style={{ maxWidth: 500 }}
+      style={{ maxWidth: 750 }}
       ref={ref}
     >
-      <Avatar name={senderIdentifier} variant="beam" colors={AVATAR_COLORS} className="h-8 w-8" />
+      <div>
+        <Avatar name={senderIdentifier} variant="beam" colors={AVATAR_COLORS} className="h-8 w-8" />
+      </div>
       <div className="flex flex-col gap-4">
         <div className="flex gap-2 items-center">
           <h2 className="font-bold">{senderIdentifier}</h2>

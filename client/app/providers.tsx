@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { createContext } from "react";
 import useWebSocket from "react-use-websocket";
-import { Address, EncryptedMessage, Message } from "@/types";
+import { Address, EncryptedMessage, Message, SimUuid } from "@/types";
 import { SendJsonMessage } from "react-use-websocket/dist/lib/types";
 
 export interface ProvidersProps {
@@ -48,14 +48,13 @@ export function Providers({ children, themeProps }: ProvidersProps) {
 
   const { sendJsonMessage } = useWebSocket<EncryptedMessage>(process.env.NEXT_PUBLIC_SOCKET_URL!, {
     onMessage: (message: MessageEvent<EncryptedMessage>) => {
-      console.log("MESSAGE", message);
       setMessages((curr) => [...curr, message.data]);
     },
   });
 
   const getMessages = React.useCallback(
-    (address: Address) => {
-      const msgs = messages.filter((m) => m.sender === address);
+    (conversation: SimUuid) => {
+      const msgs = messages.filter((m) => m.conversation === conversation);
       return msgs;
     },
     [messages],

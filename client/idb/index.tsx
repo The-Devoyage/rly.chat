@@ -12,9 +12,8 @@ export async function openUserDB(simUuid: string) {
       }
       if (!db.objectStoreNames.contains("message")) {
         db.createObjectStore("message", { keyPath: "id", autoIncrement: true }).createIndex(
-          "uuidIndex",
-          "uuid",
-          { unique: true },
+          "conversationIndex",
+          "conversation",
         );
       }
     },

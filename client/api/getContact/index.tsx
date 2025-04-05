@@ -1,11 +1,9 @@
-import { ServiceResponse } from "@/types";
+import { Contact, ServiceResponse } from "@/types";
 import apiClient from "..";
 
 export const getContact = async (payload: { token: string }) => {
   try {
-    const res = await apiClient.post<
-      ServiceResponse<{ uuid: string; address: string; public_key: string; identifier: string }>
-    >("/contact-link/decrypt", {
+    const res = await apiClient.post<ServiceResponse<Contact>>("/contact-link/decrypt", {
       token: payload.token,
     });
     return res.data;

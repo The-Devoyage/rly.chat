@@ -1,3 +1,4 @@
+import Dexie, { EntityTable } from "dexie";
 import { SVGProps } from "react";
 
 export type SimUuid = string;
@@ -11,10 +12,19 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 };
 
 export interface Contact {
-  uuid: SimUuid;
+  simUuid: SimUuid;
   address: Address;
   publicKey: PublicKey;
-  name?: string;
+  identifier?: string;
+}
+
+export interface EncryptedSim {
+  uuid: SimUuid;
+  identifier: Identifier;
+  profile: {
+    encryptedData: string;
+    nonce: string;
+  };
 }
 
 export interface Sim {
@@ -33,14 +43,34 @@ export interface Message {
   text: string;
 }
 
+// Stored in indexed db
 export interface EncryptedMessage {
   conversation: SimUuid;
-  address: Address | null;
-  encryptedMessage: string; // JSON<Message>
+  encryptedData: string; // JSONSTRING<Message>
   nonce: string;
+  sender: SimUuid;
 }
 
-export interface ServiceResponse<T extends Record<string, unknown>> {
+export interface ServiceResponse<T> {
   success: boolean;
   data?: T;
 }
+
+// Sent over the socket
+export interface SerializedMessage {
+  conversation: SimUuid;
+  address: Address;
+  encryptedMessage: Pick<EncryptedMessage, "encryptedData" | "nonce" | "sender">;
+}
+
+export interface EncryptedContact {
+  id: number;
+  simUuid: SimUuid;
+  encryptedData: string;
+  nonce: string;
+}
+
+export type RlyDatabase = Dexie & {
+  contacts: EntityTable<EncryptedContact, "id">;
+  message: EntityTable<EncryptedMessage, "conversation">;
+};

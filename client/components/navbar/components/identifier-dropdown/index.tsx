@@ -1,30 +1,24 @@
 "use client";
 
-import { GlobalContext } from "@/app/providers";
-import { useSim } from "@/utils/useSim";
+import { SimContext } from "@/app/providers/sim-provider";
 import { Chip } from "@heroui/chip";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@heroui/dropdown";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 
 export const IdentifierDropdown = () => {
-  const { simPassword, setSimPassword } = useContext(GlobalContext);
-  const { identifier, handleLock } = useSim(false);
+  const { encryptedSim, handleLock, decryptSim } = useContext(SimContext);
   const router = useRouter();
+  const sim = decryptSim();
 
   const handleUnmountSim = () => {
-    setSimPassword(null);
+    handleLock();
     window.localStorage.removeItem("sim");
     window.dispatchEvent(new Event("storage"));
     router.push("/");
   };
 
-  if (!identifier) {
+  if (!encryptedSim) {
     return null;
   }
 
@@ -32,15 +26,11 @@ export const IdentifierDropdown = () => {
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
         <Chip color="default" className="cursor-pointer">
-          {identifier}
+          {encryptedSim.identifier}
         </Chip>
       </DropdownTrigger>
       <DropdownMenu>
-        <DropdownItem
-          key="lock_unlock_sim"
-          onPress={handleLock}
-          className={simPassword ? "" : "hidden"}
-        >
+        <DropdownItem key="lock_unlock_sim" onPress={handleLock} className={!!sim ? "" : "hidden"}>
           Lock Sim
         </DropdownItem>
         <DropdownItem key="unmount_sim" onPress={handleUnmountSim}>

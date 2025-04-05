@@ -1,47 +1,35 @@
-import {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from "react";
 import { Textarea } from "@heroui/input";
 import clsx from "clsx";
-import { Contact, EncryptedMessage, Message, Sim, SimUuid } from "@/types";
+import { Contact, EncryptedMessage, Message, SerializedMessage, Sim } from "@/types";
 import { Button } from "@heroui/button";
 import { encryptMessage } from "@/utils/encryption";
-import { insertMessage, selectMessages } from "@/idb/message";
-import { GlobalContext } from "@/app/providers";
+import { SocketContext } from "@/app/providers/socket-provider";
+import { DatabaseContext } from "@/app/providers/db-provider";
 
 interface ChatInputProps {
   handleScrollBottom: (shouldScroll: boolean) => void;
-  chattingWith: Contact;
+  contact: Contact;
   sim: Sim;
-  setHistory: Dispatch<SetStateAction<Message[]>>;
 }
 
-export const ChatInput: FC<ChatInputProps> = ({
-  handleScrollBottom,
-  chattingWith,
-  sim,
-  setHistory,
-}) => {
+export const ChatInput: FC<ChatInputProps> = ({ handleScrollBottom, contact, sim }) => {
   const [message, setMessage] = useState("");
   const [maxRows, setMaxRows] = useState<number | undefined>(1);
-  const { sendJsonMessage } = useContext(GlobalContext);
+  const { sendJsonMessage } = useContext(SocketContext);
+  const { db } = useContext(DatabaseContext);
 
   useEffect(() => {
     handleScrollBottom(true);
   }, [message.length]);
 
   const handleSendMessage = async () => {
-    if (!sim || !chattingWith) return;
+    if (!sim || !contact) return;
 
-    const m: Message = { to: chattingWith.uuid, from: sim.uuid, text: message };
+    const m: Message = { to: contact.simUuid, from: sim.uuid, text: message };
 
     const recipientMessage = encryptMessage(
-      chattingWith.publicKey,
+      contact.publicKey,
       sim.profile.secretKey,
       JSON.stringify(m),
     );
@@ -52,20 +40,22 @@ export const ChatInput: FC<ChatInputProps> = ({
       JSON.stringify(m),
     );
 
-    const send: EncryptedMessage = {
+    const send: SerializedMessage = {
       conversation: sim.uuid,
-      address: chattingWith.address,
-      ...recipientMessage,
+      address: contact.address,
+      encryptedMessage: {
+        ...recipientMessage,
+        sender: sim.uuid,
+      },
     };
 
     const store: EncryptedMessage = {
-      conversation: chattingWith.uuid,
-      address: null,
+      conversation: contact.simUuid,
+      sender: sim.uuid,
       ...senderMessage,
     };
 
-    await insertMessage(sim.uuid, store);
-    setHistory((curr) => [...curr, m]);
+    await db?.message.add(store);
 
     sendJsonMessage(send);
   };

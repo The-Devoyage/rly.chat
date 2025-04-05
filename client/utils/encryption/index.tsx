@@ -23,7 +23,7 @@ export function encryptData<T>(data: T, password: string) {
   };
 }
 
-export function decryptData(encryptedData: string, nonce: string, password: string) {
+export function decryptData<T>(encryptedData: string, nonce: string, password: string): T | null {
   const key = nacl.hash(naclUtil.decodeUTF8(password)).slice(0, 32);
 
   const encryptedUint8 = naclUtil.decodeBase64(encryptedData);
@@ -37,7 +37,14 @@ export function decryptData(encryptedData: string, nonce: string, password: stri
 
   const decryptedString = naclUtil.encodeUTF8(decrypted);
 
-  return JSON.parse(decryptedString);
+  try {
+    const parsed = JSON.parse(decryptedString) as T;
+    return parsed;
+  } catch (err) {
+    console.error(err);
+    window.alert("Something went wrong while decrypting.");
+    return null;
+  }
 }
 
 export function encryptMessage(
@@ -54,7 +61,7 @@ export function encryptMessage(
   const encryptedMessage = nacl.box(messageUint8, nonce, publicKey, privateKey);
 
   return {
-    encryptedMessage: naclUtil.encodeBase64(encryptedMessage),
+    encryptedData: naclUtil.encodeBase64(encryptedMessage),
     nonce: naclUtil.encodeBase64(nonce),
   };
 }
@@ -65,17 +72,21 @@ export function decryptMessage(
   encryptedMessage: string,
   nonce: string,
 ) {
-  const messageUint8 = naclUtil.decodeBase64(encryptedMessage);
-  const nonceUint8 = naclUtil.decodeBase64(nonce);
+  try {
+    const messageUint8 = naclUtil.decodeBase64(encryptedMessage);
+    const nonceUint8 = naclUtil.decodeBase64(nonce);
 
-  const publicKey = naclUtil.decodeBase64(senderPublicKey);
-  const privateKey = naclUtil.decodeBase64(recipientSecretKey);
+    const publicKey = naclUtil.decodeBase64(senderPublicKey);
+    const privateKey = naclUtil.decodeBase64(recipientSecretKey);
 
-  const decryptedMessage = nacl.box.open(messageUint8, nonceUint8, publicKey, privateKey);
+    const decryptedMessage = nacl.box.open(messageUint8, nonceUint8, publicKey, privateKey);
 
-  if (!decryptedMessage) {
-    throw new Error("Decryption failed");
+    if (!decryptedMessage) {
+      throw new Error("Decryption failed");
+    }
+
+    return naclUtil.encodeUTF8(decryptedMessage);
+  } catch (err) {
+    console.error(err);
   }
-
-  return naclUtil.encodeUTF8(decryptedMessage);
 }

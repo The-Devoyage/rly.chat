@@ -1,6 +1,6 @@
 "use client";
 
-import { GlobalContext } from "@/app/providers";
+import { SimContext } from "@/app/providers/sim-provider";
 import { decryptData } from "@/utils/encryption";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
@@ -12,7 +12,7 @@ import { useContext } from "react";
 export default function LoadSimPage() {
   const router = useRouter();
   const searchQuery = useSearchParams();
-  const { setSimPassword } = useContext(GlobalContext);
+  const { setSimPassword } = useContext(SimContext);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

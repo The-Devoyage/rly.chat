@@ -1,24 +1,17 @@
 "use client";
 
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from "@heroui/modal";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
 import { Form } from "@heroui/form";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { useContext, useEffect, useRef } from "react";
-import { GlobalContext } from "@/app/providers";
 import { useRouter } from "next/navigation";
+import { SimContext } from "@/app/providers/sim-provider";
 
 export const PasswordPrompt = () => {
   const ref = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const { setSimPassword, requestSimPassword, setRequestSimPassword } =
-    useContext(GlobalContext);
+  const { setSimPassword, requestSimPassword, setRequestSimPassword } = useContext(SimContext);
 
   useEffect(() => {
     if (ref.current && requestSimPassword) {

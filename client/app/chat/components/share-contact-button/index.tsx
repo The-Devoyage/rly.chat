@@ -1,27 +1,28 @@
 "use client";
 
 import { getContactLink } from "@/api/getContactLink";
-import { Sim } from "@/types";
+import { SimContext } from "@/app/providers/sim-provider";
 import { Alert } from "@heroui/alert";
 import { Button, ButtonProps } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import QRCode from "react-qr-code";
 
-interface ShareContactButtonProps extends ButtonProps {
-  sim: Sim;
-}
+interface ShareContactButtonProps extends ButtonProps {}
 
-export const ShareContactButton: FC<ShareContactButtonProps> = ({ sim, ...props }) => {
+export const ShareContactButton: FC<ShareContactButtonProps> = ({ ...props }) => {
   const [link, setLink] = useState<string | null>(null);
+  const { decryptSim, handleRequestUnlock } = useContext(SimContext);
+  const sim = decryptSim();
 
   const handleCreate = async () => {
     if (!sim) {
-      return window.alert("Sim not found!");
+      handleRequestUnlock();
+      return;
     }
     const res = await getContactLink({
-      uuid: sim.uuid,
+      simUuid: sim.uuid,
       address: sim.profile.address,
       publicKey: sim.profile.publicKey,
       identifier: sim.identifier,

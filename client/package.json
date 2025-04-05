@@ -36,6 +36,8 @@
     "boring-avatars": "^1.11.2",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
+    "dexie": "^4.0.11",
+    "dexie-react-hooks": "^1.1.7",
     "framer-motion": "11.13.1",
     "idb": "^8.0.2",
     "intl-messageformat": "^10.5.0",

@@ -1,14 +1,22 @@
 "use client";
 
 import { AVATAR_COLORS } from "@/utils/constants";
-import { useSim } from "@/utils/useSim";
 import BoringAvatar from "boring-avatars";
 import { ShareContactButton } from "../share-contact-button";
 import Link from "next/link";
 import { Button } from "@heroui/button";
+import { useContext, useEffect } from "react";
+import { SimContext } from "@/app/providers/sim-provider";
+import { useContacts } from "@/utils/useContacts";
 
 export const Contacts = () => {
-  const { sim, contacts } = useSim(true, true);
+  const contacts = useContacts();
+  const { handleRequestUnlock, decryptSim } = useContext(SimContext);
+  const sim = decryptSim();
+
+  useEffect(() => {
+    if (!sim) handleRequestUnlock();
+  }, [sim]);
 
   if (!contacts?.length) {
     return (
@@ -17,7 +25,7 @@ export const Contacts = () => {
         <p className="w-96 text-center">
           No One's Here. Share your contact information to get started.
         </p>
-        <ShareContactButton variant="bordered" sim={sim!} />
+        <ShareContactButton variant="bordered" />
       </div>
     );
   }
@@ -30,21 +38,21 @@ export const Contacts = () => {
           <Button size="sm" color="secondary" variant="ghost">
             Export
           </Button>
-          <ShareContactButton sim={sim!} />
+          <ShareContactButton />
         </div>
       </div>
       {contacts.map((c, i) => (
-        <Link href={`/chat/${c.uuid}`} key={c.uuid}>
+        <Link href={`/chat/${c.simUuid}`} key={c.simUuid}>
           <div className="hover:bg-gray-100 dark:hover:bg-slate-700 transition-all rounded">
             <div className="flex p-2 gap-4 mb-2 justify-center items-center">
               <BoringAvatar
-                name={c.name}
+                name={c.identifier}
                 className="w-10 h-10"
                 variant="beam"
                 colors={AVATAR_COLORS}
               />
               <div className="w-full">
-                <h2>{c.name}</h2>
+                <h2>{c.identifier}</h2>
                 <span className="text-gray-500 dark:text-gray-400 text-sm">{i} unread</span>
               </div>
             </div>

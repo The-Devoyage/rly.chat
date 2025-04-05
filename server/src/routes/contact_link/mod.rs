@@ -58,6 +58,8 @@ fn decrypt_data(encrypted_data: &str) -> Result<EncryptContactLinkBody, anyhow::
 
     let contact_details =
         serde_json::from_str::<EncryptContactLinkBody>(&String::from_utf8(stringified_json)?)?;
+    log::info!("CONTACT DETAILS: {:?}", contact_details);
+
     Ok(contact_details)
 }
 
@@ -103,17 +105,21 @@ async fn decrypt_contact_link(req_body: web::Json<DecryptContactLinkBody>) -> im
             return HttpResponse::InternalServerError().body("Failed to get contact.");
         }
     };
+
+    log::info!("CONTACT: {:?}", contact);
+
     let service_response = ServiceResponse {
         success: true,
-        data: Some(json!(contact)),
+        data: Some(serde_json::to_value(contact).unwrap()),
     };
 
     HttpResponse::Ok().json(service_response)
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 struct EncryptContactLinkBody {
-    pub uuid: String,
+    pub sim_uuid: String,
     pub address: String,
     pub public_key: String,
     pub identifier: String,

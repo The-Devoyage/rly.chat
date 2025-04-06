@@ -1,3 +1,4 @@
+use anyhow::anyhow;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use tokio::sync::broadcast;
@@ -22,10 +23,16 @@ impl Broker {
             .subscribe()
     }
 
-    pub fn publish(&self, topic: &str, message: String) {
+    pub fn publish(&self, topic: &str, message: String) -> Result<(), anyhow::Error> {
         let topics = self.topics.lock().unwrap();
         if let Some(sender) = topics.get(topic) {
-            let _ = sender.send(message); // Ignore send errors
+            let sent = sender.send(message); // Ignore send errors
+            match sent {
+                Ok(_) => Ok(()),
+                Err(_) => Err(anyhow!("User has logged off.")),
+            }
+        } else {
+            Err(anyhow!("User Offline"))
         }
     }
 }

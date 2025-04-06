@@ -1,12 +1,14 @@
 use actix_cors::Cors;
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
-use broker::Broker;
+use app_data::AppData;
 use environment::Environment;
 use routes::{chat, contact_link};
 use service_response::ServiceResponse;
 
-mod app_data;
+pub mod app_data;
 pub mod broker;
+pub mod database;
+pub mod encrypted_message;
 mod environment;
 mod routes;
 mod service_response;
@@ -31,7 +33,7 @@ async fn main() -> std::io::Result<()> {
 
     log::info!("RLY Backend Started");
 
-    let broker = Broker::new();
+    let app_data = AppData::new().await.expect("Failed to load app data.");
 
     HttpServer::new(move || {
         let cors = Cors::default()
@@ -40,11 +42,10 @@ async fn main() -> std::io::Result<()> {
             .allow_any_header()
             .allowed_origin("http://localhost:3000");
 
-
         App::new()
             .wrap(cors)
             .route("/chat/{uuid}", web::get().to(chat::chat))
-            .app_data(web::Data::new(broker.clone()))
+            .app_data(web::Data::new(app_data.clone()))
             .service(hello)
             .service(contact_link::encrypt_contact_link)
             .service(contact_link::decrypt_contact_link)

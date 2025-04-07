@@ -5,15 +5,25 @@ import { Form } from "@heroui/form";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { useContext, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SimContext } from "@/app/providers/sim-provider";
 
 export const PasswordPrompt = () => {
   const ref = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const { setSimPassword, requestSimPassword, setRequestSimPassword } = useContext(SimContext);
+  const { encryptedSim, setSimPassword, requestSimPassword, setRequestSimPassword } =
+    useContext(SimContext);
+  const searchQuery = useSearchParams();
+  const pathname = usePathname();
 
   useEffect(() => {
+    if (requestSimPassword && !encryptedSim) {
+      window.alert("Create or mount a SIM first!");
+      router.push(
+        `/sims?redirect_uri=${process.env.NEXT_PUBLIC_CLIENT_URL}${pathname}?${searchQuery.toString()}`,
+      );
+      setRequestSimPassword(false);
+    }
     if (ref.current && requestSimPassword) {
       ref.current.focus();
     }

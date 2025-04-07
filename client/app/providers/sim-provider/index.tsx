@@ -42,10 +42,8 @@ export const SimProvider: FC<{ children: React.ReactNode }> = ({ children }) => 
   const [encryptedSim, setEncryptedSim] = useState<EncryptedSim | null>(null);
   const [simPassword, setSimPassword] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const pathname = usePathname();
   const router = useRouter();
   const [requestSimPassword, setRequestSimPassword] = useState(false);
-  const searchQuery = useSearchParams();
 
   useEffect(() => {
     const getSim = async () => {
@@ -54,10 +52,7 @@ export const SimProvider: FC<{ children: React.ReactNode }> = ({ children }) => 
         const storedSim = window.localStorage.getItem("sim");
 
         if (!storedSim) {
-          window.alert("Create a SIM first!");
-          router.push(
-            `/sims?redirect_uri=${process.env.NEXT_PUBLIC_CLIENT_URL}${pathname}?${searchQuery.toString()}`,
-          );
+          setEncryptedSim(null);
           return;
         }
 
@@ -65,6 +60,7 @@ export const SimProvider: FC<{ children: React.ReactNode }> = ({ children }) => 
 
         if (!simData) {
           window.alert("Invalid SIM.");
+          setEncryptedSim(null);
           return;
         }
 
@@ -90,7 +86,7 @@ export const SimProvider: FC<{ children: React.ReactNode }> = ({ children }) => 
   }, []);
 
   const decryptSim = () => {
-    if (simPassword) {
+    if (simPassword && encryptedSim) {
       const {
         profile: { encryptedData, nonce },
         ...rest

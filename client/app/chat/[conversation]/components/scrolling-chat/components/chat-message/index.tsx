@@ -14,7 +14,7 @@ export const ChatMessage = forwardRef<
 >(({ isSender, senderIdentifier, text }, ref) => {
   return (
     <Card
-      className={clsx("p-4 flex flex-row gap-4 my-2", {
+      className={clsx("p-4 flex flex-row gap-4 my-2 mx-4", {
         "bg-transparent shadow-none": isSender,
       })}
       style={{ maxWidth: 750 }}

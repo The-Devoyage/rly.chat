@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { Textarea } from "@heroui/input";
 import clsx from "clsx";
 import { Contact, EncryptedMessage, Message, SerializedMessage, Sim } from "@/types";
@@ -41,6 +41,7 @@ export const ChatInput: FC<ChatInputProps> = ({ handleScrollBottom, contact, sim
     );
 
     const send: SerializedMessage = {
+      messageType: "message",
       conversation: sim.uuid,
       address: contact.address,
       encryptedMessage: {

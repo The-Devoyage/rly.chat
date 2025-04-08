@@ -61,6 +61,7 @@ export interface SerializedMessage {
   conversation: SimUuid;
   address: Address;
   encryptedMessage: Pick<EncryptedMessage, "encryptedData" | "nonce" | "sender">;
+  messageType: "message" | "contact"
 }
 
 export interface EncryptedContact {

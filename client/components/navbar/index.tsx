@@ -26,7 +26,7 @@ export const Navbar = () => (
           <p className="font-bold text-inherit">RLY</p>
         </NextLink>
       </NavbarBrand>
-      <ul className="hidden lg:flex gap-4 justify-start ml-2">
+      <ul className="hidden md:flex gap-4 justify-start ml-2">
         {siteConfig.navItems.map((item) => (
           <NavbarItem key={item.href}>
             <NextLink
@@ -44,10 +44,7 @@ export const Navbar = () => (
       </ul>
     </NavbarContent>
 
-    <NavbarContent
-      className="hidden sm:flex basis-1/5 sm:basis-full"
-      justify="end"
-    >
+    <NavbarContent className="hidden sm:flex basis-1/5 sm:basis-full" justify="end">
       <NavbarItem className="hidden sm:flex gap-2">
         <Link isExternal aria-label="Github" href={siteConfig.links.github}>
           <GithubIcon className="text-default-500" />
@@ -62,6 +59,7 @@ export const Navbar = () => (
         <GithubIcon className="text-default-500" />
       </Link>
       <ThemeSwitch />
+      <IdentifierDropdown />
       <NavbarMenuToggle />
     </NavbarContent>
 

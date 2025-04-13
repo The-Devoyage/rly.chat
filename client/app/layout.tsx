@@ -8,6 +8,8 @@ import { siteConfig } from "@/config/site";
 import { fontMono } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 import { PasswordPrompt } from "@/components/password-prompt";
+import { Suspense } from "react";
+import { Loader } from "@/components/loader";
 
 export const metadata: Metadata = {
   title: {
@@ -27,29 +29,24 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning lang="en">
       <head />
-      <body
-        className={clsx(
-          "min-h-screen bg-background font-mono antialiased",
-          fontMono.variable,
-        )}
-      >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col h-screen">
-            <Navbar />
-            <main className="container mx-auto max-w-7xl p-8 px-6 flex-grow">
-              <PasswordPrompt />
-              {children}
-            </main>
-          </div>
-        </Providers>
+      <body className={clsx("min-h-screen bg-background font-mono antialiased", fontMono.variable)}>
+        <Suspense
+          fallback={<Loader message="Your next interview is going to be so much easier." />}
+        >
+          <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+            <div className="relative flex flex-col h-screen">
+              <Navbar />
+              <main className="container mx-auto max-w-7xl p-8 px-6 flex-grow">
+                <PasswordPrompt />
+                {children}
+              </main>
+            </div>
+          </Providers>
+        </Suspense>
       </body>
     </html>
   );

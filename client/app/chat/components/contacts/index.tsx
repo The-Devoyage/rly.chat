@@ -23,7 +23,7 @@ export const Contacts = () => {
       <div className="flex flex-col gap-4 items-center justify-center h-96">
         <BoringAvatar name="Boakley" className="w-20 h-20" variant="beam" colors={AVATAR_COLORS} />
         <p className="w-96 text-center">
-          No One's Here. Share your contact information to get started.
+          No One&apos;s Here. Share your contact information to get started.
         </p>
         <ShareContactButton variant="bordered" />
       </div>

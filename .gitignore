@@ -37,6 +37,6 @@ client/*.tsbuildinfo
 client/next-env.d.ts
 
 #### RUST ####
-server/.env
+server/*.env
 server/target
 *.sql

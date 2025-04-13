@@ -11,7 +11,7 @@ pub struct Environment {
 
 impl Environment {
     pub fn new() -> Result<Environment, Box<dyn Error>> {
-        dotenvy::dotenv()?;
+        let _ = dotenvy::dotenv();
 
         let environment = Environment {
             host: env::var("HOST")?,

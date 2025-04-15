@@ -39,4 +39,4 @@ client/next-env.d.ts
 #### RUST ####
 server/*.env
 server/target
-*.db
+server/*.db

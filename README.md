@@ -36,7 +36,7 @@ The client-side application is built using Next.js, a popular React framework kn
 
 3.  **Set up Env Vars**
 
-Use the provided `example.env` as a guide.
+    Use the provided `example.env` as a guide.
 
 4.  **Start the Development Server:**
     ```bash
@@ -62,7 +62,7 @@ The server-side application is built using Rust, a language known for its speed,
 
 3.  **Set up Env Vars**
 
-Use the provided `example.env` as a guide.
+    Use the provided `example.env` as a guide.
 
 4.  **Run the Server:**
     ```bash

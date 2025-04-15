@@ -18,6 +18,10 @@ export const IdentifierDropdown = () => {
     router.push("/");
   };
 
+  const handleContacts = () => {
+    router.push("/chat")
+  }
+
   if (!encryptedSim) {
     return null;
   }
@@ -30,6 +34,7 @@ export const IdentifierDropdown = () => {
         </Chip>
       </DropdownTrigger>
       <DropdownMenu>
+        <DropdownItem key="contacts" onPress={handleContacts} className={!!sim ? "" : "hidden"}>Contacts</DropdownItem>
         <DropdownItem key="lock_unlock_sim" onPress={handleLock} className={!!sim ? "" : "hidden"}>
           Lock Sim
         </DropdownItem>

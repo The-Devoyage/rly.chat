@@ -56,12 +56,21 @@ export interface ServiceResponse<T> {
   data?: T;
 }
 
+export type MessageType = "message" | "contact";
+
 // Sent over the socket
 export interface SerializedMessage {
   conversation: SimUuid;
   address: Address;
   encryptedMessage: Pick<EncryptedMessage, "encryptedData" | "nonce" | "sender">;
-  messageType: "message" | "contact"
+  messageType: MessageType;
+}
+
+// Sent over the socket
+export interface SerializedContact {
+  address: Address;
+  token: string;
+  messageType: MessageType;
 }
 
 export interface EncryptedContact {

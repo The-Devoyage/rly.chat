@@ -1,4 +1,10 @@
-use crate::ServiceResponse;
+use std::str::FromStr;
+
+use crate::{
+    app_data::AppData,
+    models::{encrypted_message::MessageType, shared_contact::SharedContact},
+    ServiceResponse,
+};
 use actix_web::{post, web, HttpResponse, Responder};
 use aes_gcm::{
     aead::{Aead, OsRng},
@@ -10,6 +16,7 @@ use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {
@@ -172,4 +179,68 @@ async fn encrypt_contact_link(req_body: web::Json<EncryptContactLinkBody>) -> im
     };
 
     HttpResponse::Ok().json(response)
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
+struct ShareContactLinkBody {
+    pub address: String,
+    pub token: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SerializedContactMessage {
+    pub address: Uuid,
+    pub token: String,
+    pub message_type: MessageType,
+}
+
+#[post("/contact-link/share")]
+async fn share_contact_link(
+    req_body: web::Json<ShareContactLinkBody>,
+    app_data: web::Data<AppData>,
+) -> impl Responder {
+    let share_contact_link_body = req_body.into_inner();
+    let address = match Uuid::from_str(&share_contact_link_body.address) {
+        Ok(a) => a,
+        Err(err) => {
+            log::error!("ERROR: {err}");
+            return HttpResponse::InternalServerError().body("Invalid address format.");
+        }
+    };
+
+    // Try sending first
+    let broker = app_data.broker.clone();
+    let address_topic = format!("address_{}", address.to_string());
+    let serialized_contact_message = SerializedContactMessage {
+        address,
+        token: share_contact_link_body.token.clone(),
+        message_type: MessageType::Contact,
+    };
+    let stringified_json = serde_json::to_string(&serialized_contact_message).unwrap();
+    let sent = broker.publish(&address_topic, stringified_json.to_string());
+
+    // If not sent, cache it.
+    if sent.is_err() {
+        let saved = app_data
+            .database
+            .save_shared_contact(&SharedContact {
+                address,
+                token: share_contact_link_body.token,
+            })
+            .await;
+        match saved {
+            Ok(_) => {}
+            Err(err) => {
+                log::error!("{:?}", err);
+                return HttpResponse::InternalServerError().body("Failed to send contact.");
+            }
+        }
+    }
+
+    HttpResponse::Ok().json(ServiceResponse {
+        success: true,
+        data: None,
+    })
 }

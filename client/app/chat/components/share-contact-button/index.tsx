@@ -1,6 +1,6 @@
 "use client";
 
-import { getContactLink } from "@/api/getContactLink";
+import { createContactLink } from "@/api/createContactLink";
 import { SimContext } from "@/app/providers/sim-provider";
 import { Alert } from "@heroui/alert";
 import { Button, ButtonProps } from "@heroui/button";
@@ -21,7 +21,7 @@ export const ShareContactButton: FC<ShareContactButtonProps> = ({ ...props }) =>
       handleRequestUnlock();
       return;
     }
-    const res = await getContactLink({
+    const res = await createContactLink({
       simUuid: sim.uuid,
       address: sim.profile.address,
       publicKey: sim.profile.publicKey,

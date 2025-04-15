@@ -1,5 +1,7 @@
 "use client";
 
+import { createContactLink } from "@/api/createContactLink";
+import { shareContactLink } from "@/api/shareContactLink";
 import { DatabaseContext } from "@/app/providers/db-provider";
 import { SimContext } from "@/app/providers/sim-provider";
 import { Contact } from "@/types";
@@ -30,7 +32,28 @@ export const ImportContactForm: FC<{
     const identifier = formData.get("name") as string;
     const encryptedContact = encryptData<Contact>({ ...contact, identifier }, simPassword);
     await db.contacts.add({ simUuid: contact.simUuid, ...encryptedContact });
-    router.push("/chat");
+
+    // Create Contact Link
+    const ccl = await createContactLink({
+      simUuid: sim.uuid,
+      address: sim.profile.address,
+      publicKey: sim.profile.publicKey,
+      identifier: sim.identifier,
+    });
+
+    // Share new contact link back to imported contact
+    if (ccl && ccl.data?.token) {
+      const scl = await shareContactLink({
+        address: contact.address,
+        token: ccl.data.token,
+      });
+      if (!scl) {
+        window.alert("Error: Could not share your contact with imported contact.");
+      }
+      router.push("/chat");
+      return
+    }
+    window.alert("Something went wrong... Please try agian.");
   };
 
   if (!!sim && sim?.profile.address === contact.address) {

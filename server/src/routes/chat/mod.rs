@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::{app_data::AppData, encrypted_message::SerializedMessage};
+use crate::{app_data::AppData, models::encrypted_message::SerializedMessage};
 use actix_web::{rt, web, Error, HttpRequest, HttpResponse};
 use actix_ws::AggregatedMessage;
 use futures_util::StreamExt as _;

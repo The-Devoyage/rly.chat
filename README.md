@@ -1,70 +1,81 @@
 # Rly Chat
 
-A privacy focused, end to end encrypted chat application built with NextJS, Python, and Kafka.
+**A privacy-focused, end-to-end encrypted chat application built with NextJS and Rust.**
 
-Features:
-- No Accounts
-- No Personal Identifiable Data Stored
-- End to End Encrypted Messaging - All messages are encrypted with a private/public key pair before leaving the client side application.
-- No Public Identifiers - Only people who have received your contact identifer can message you.
+Rly Chat is designed for secure and private communication, prioritizing user anonymity and data protection. 
+We believe that your conversations should remain yours, and we've built this application with that principle at its core.
+
+## Key Features:
+
+* **No Accounts Required:** Get started chatting instantly without the hassle of creating and managing accounts. Your privacy begins from the moment you open the application.
+* **Zero Personal Identifiable Information Stored:** We don't collect or store any personal data. Your identity remains private.
+* **End-to-End Encrypted Messaging:** All messages are encrypted directly on your device before being sent and are only decrypted on the recipient's device. This ensures that no one, including us, can read your conversations.
+* **Self-Hostable:** Take complete control of your communication infrastructure by self-hosting both the client and server components. This allows for maximum privacy and customization. (Coming Soon)
 
 ## Getting Started
 
-### Client Side Application
+This guide will walk you through the steps to get Rly Chat running in development mode.
 
-Start the client side application with `npm run dev` from the `/client` folder.
+### Client Side Application (Development)
 
-### Server Side Application
+The client-side application is built using Next.js, a popular React framework known for its performance and developer experience.
 
-Start the server with `cargo run` from the `/server` directory.
+1.  **Navigate to the Client Directory:**
+    ```bash
+    cd client
+    ```
 
-## User Flow
+2.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
+    or
+    ```bash
+    yarn install
+    ```
 
-### Users
+3.  **Set up Env Vars**
 
-- Nick
-- Bongo
-- Oakley
+Use the provided `example.env` as a guide.
 
-**Two Existing Users**
+4.  **Start the Development Server:**
+    ```bash
+    npm run dev
+    ```
+    or
+    ```bash
+    yarn dev
+    ```
 
-1. Nick and Bongo creates a sim. They are now existing users. Oakley does not register.
-2. Bongo clicks "share contact". 
-3. HTTP request is sent to the server, a record for a shared contact with a UUID is stoerd in DB. Nick's "Address" is encrypted and stored in a JWT with the UUID identifier.
-4. A QR code pops on his phone screen/Link is given to nick with the JWT.
-5. Bongo scans it and is redirected to import contact endpoint. JWT is pulled from URL bar and sent to server at `/import_contact`
-6. Contact/Address is decrypted and sent back to Bongo so he can add it to his contact list. The tracked UUID is expired in the DB and the JWT is invalidated.
-7. Bongo now has Nick's "Address" and "Public Key" - He can now chat with Nick.
-8. A Kafka message is posted to nick, sharing Bongo's address and public key, encrypted with nicks public key - so that nick can get bongo's contact.
+    This command will start the Next.js development server. You can usually access the application in your browser at `http://localhost:3000`.
 
-**One Existing User**
-1. Nick clicks "share contact".
-2. Oakley scans it. Tab opens, but Oakley does not have a SIM.
-3. Create SIM workflow opens. Sim is created/downloaded and regular process initiates.
+### Server Side Application (Development)
 
+The server-side application is built using Rust, a language known for its speed, safety, and concurrency.
 
-## To Do
+1.  **Ensure Rust is Installed:** If you don't have Rust installed, follow the instructions on the official Rust website: [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install).
 
-### Client
+2.  **Navigate to the Server Directory:**
+    ```bash
+    cd server
+    ```
 
-[ ] - Allow users to share their contact with a signed link/QR code.
-[ ] - Allow users to start a new sim without a password so they can quickly import a received contact on init sim.
-[ ] - Create an invite link, that allows users to send initial private message, and provide the signed link to other user who can quickly jump in and read it.
-[ ] - Improved create sim workflow for non-exsiting sims importing a contact for first time
+3.  **Set up Env Vars**
 
-### Server
+Use the provided `example.env` as a guide.
 
-[ ] - Build a Python HTTP Server with Fast API
-[ ] - Build a health check route.
-[ ] - Start a MongoDB to store meta data.
-[ ] - Build a base Beanie Model for database schemas
-[ ] - Create a `register sim` route, which seals the "address" property of the sim in a non-expiring JWT.
-[ ] - Create a `share contact` route, which generates a JWT sealed with the encrypted "address" of the contact.
-[ ] - Create a `add contact` route, which when provided with the JWT expires the shared JWT contact in the database and returns the decrypted "address" of the contact.
-[ ] - Create an `invite_link` flow, similar to the contact flow.
-[ ] - Create chat endpoint
-[ ] - Configure Kafka relay server to hold and send chats on chat endpoint connections.
+4.  **Run the Server:**
+    ```bash
+    cargo run
+    ```
 
-### Kafka 
+    This command will compile and run the Rust server. You should see output indicating that the server has started, typically listening on a specific port (e.g., `localhost:8080`).
 
-[ ] - Configure kafka container with
+## Next Steps and Considerations:
+
+* **Self-Hosting Guide:** A more comprehensive guide on self-hosting, including configuration options and potential challenges, would be valuable for users who choose this route.
+* **Multi Device Managemnt** Incorporate an association between devices allowing all devices to stay in sync without a need for a centralized database.
+
+## Disclaimer:
+
+Rly Chat is currently in development and may have limitations or bugs. Use it at your own discretion. We are continuously working to improve its security and features.

@@ -35,9 +35,9 @@ export const Contacts = () => {
       <div className="flex justify-between items-center mb-4">
         Contacts
         <div className="flex gap-2">
-          <Button size="sm" color="secondary" variant="ghost">
-            Export
-          </Button>
+          {/* <Button size="sm" color="secondary" variant="ghost"> */}
+          {/*   Export */}
+          {/* </Button> */}
           <ShareContactButton />
         </div>
       </div>

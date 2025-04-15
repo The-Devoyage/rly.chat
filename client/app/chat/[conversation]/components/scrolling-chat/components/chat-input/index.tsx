@@ -64,7 +64,7 @@ export const ChatInput: FC<ChatInputProps> = ({ handleScrollBottom, contact, sim
   return (
     <div
       className={clsx(
-        "flex gap-1 items-end mt-2 sticky -bottom-0.5 dark:bg-zinc-800 rounded p-2",
+        "flex gap-1 items-end mt-4 sticky -bottom-0.5 bg-zinc-100 dark:bg-zinc-800 rounded p-2",
         maxRows && !message ? "flex-row" : "flex-col",
       )}
     >

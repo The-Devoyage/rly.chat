@@ -46,7 +46,6 @@ export const SocketProvider: FC<{ children: ReactNode }> = ({ children }) => {
     process.env.NEXT_PUBLIC_SOCKET_URL! + `/` + sim?.profile.address,
     {
       onMessage: async (messageEvent: MessageEvent<string>) => {
-        console.log("onMessage", messageEvent);
         try {
           const incomingMessage: SerializedMessage | SerializedContact = JSON.parse(
             messageEvent.data,
@@ -78,7 +77,7 @@ export const SocketProvider: FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
     const handleSaveIncoming = async () => {
       console.log("HANDLE SAVE", sim, lastJsonMessage);
-      if (sim && lastJsonMessage) {
+      if (sim && lastJsonMessage && lastJsonMessage.messageType === "message") {
         console.log("SAVING");
         await db?.message.add({
           ...lastJsonMessage.encryptedMessage,

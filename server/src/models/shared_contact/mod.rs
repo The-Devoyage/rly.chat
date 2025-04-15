@@ -53,4 +53,18 @@ impl Database {
             })
             .collect())
     }
+
+    pub async fn delete_shared_contacts(&self, address: Uuid) -> Result<(), anyhow::Error> {
+        let address = address.to_string();
+        sqlx::query!(
+            r#"
+            DELETE FROM shared_contact 
+            WHERE address = ?1
+            "#,
+            address
+        )
+        .execute(&self.pool)
+        .await?;
+        Ok(())
+    }
 }

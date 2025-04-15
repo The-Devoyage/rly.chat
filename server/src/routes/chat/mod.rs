@@ -1,10 +1,15 @@
 use std::str::FromStr;
 
-use crate::{app_data::AppData, models::encrypted_message::SerializedMessage};
+use crate::{
+    app_data::AppData,
+    models::encrypted_message::{MessageType, SerializedMessage},
+};
 use actix_web::{rt, web, Error, HttpRequest, HttpResponse};
 use actix_ws::AggregatedMessage;
 use futures_util::StreamExt as _;
 use tokio::spawn;
+
+use super::contact_link::SerializedContactMessage;
 
 pub async fn chat(
     req: HttpRequest,
@@ -41,7 +46,6 @@ pub async fn chat(
     let not_received = app_data.database.get_cached_messages(address_uuid).await;
     if let Ok(not_received) = not_received {
         for msg in not_received.iter() {
-            log::info!("NOT RECEIVED: {:?}", msg);
             let _ = session
                 .clone()
                 .text(serde_json::to_string(msg).unwrap())
@@ -50,6 +54,23 @@ pub async fn chat(
         // NOTE: Kinda hacky but okay for now.
         // Should only remove messages that were successfully sent
         let _ = app_data.database.clear_cached_messages(address_uuid).await;
+    }
+
+    let new_contacts = app_data.database.get_shared_contacts(address_uuid).await;
+    if let Ok(new_contacts) = new_contacts {
+        for contact in new_contacts.iter() {
+            let serialized_contact = SerializedContactMessage {
+                message_type: MessageType::Contact,
+                address: contact.address,
+                token: contact.token.clone(),
+            };
+            let _ = session
+                .clone()
+                .text(serde_json::to_string(&serialized_contact).unwrap())
+                .await;
+        }
+        // NOTE: Kinda hacky but okay for now.
+        let _ = app_data.database.delete_shared_contacts(address_uuid).await;
     }
 
     // Producer (write to topic)

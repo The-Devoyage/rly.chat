@@ -7,7 +7,6 @@ use service_response::ServiceResponse;
 
 pub mod app_data;
 pub mod broker;
-pub mod database;
 mod environment;
 pub mod models;
 mod routes;

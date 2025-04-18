@@ -13,6 +13,7 @@ use aes_gcm::{
 use anyhow::anyhow;
 use base64::{engine::general_purpose, prelude::*};
 use chrono::{Duration, Utc};
+use deeb::Entity;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -224,11 +225,15 @@ async fn share_contact_link(
     // If not sent, cache it.
     if sent.is_err() {
         let saved = app_data
-            .database
-            .save_shared_contact(&SharedContact {
-                address,
-                token: share_contact_link_body.token,
-            })
+            .deeb
+            .insert::<SharedContact>(
+                &Entity::new("shared_contact"),
+                json!(SharedContact {
+                    address,
+                    token: share_contact_link_body.token
+                }),
+                None,
+            )
             .await;
         match saved {
             Ok(_) => {}

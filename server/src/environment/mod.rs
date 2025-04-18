@@ -1,6 +1,7 @@
 use std::env;
 use std::error::Error;
 
+#[allow(dead_code)]
 pub struct Environment {
     pub host: String,
     pub port: u16,

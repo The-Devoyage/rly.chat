@@ -76,9 +76,7 @@ export const SocketProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     const handleSaveIncoming = async () => {
-      console.log("HANDLE SAVE", sim, lastJsonMessage);
       if (sim && lastJsonMessage && lastJsonMessage.messageType === "message") {
-        console.log("SAVING");
         await db?.message.add({
           ...lastJsonMessage.encryptedMessage,
           conversation: lastJsonMessage.conversation,

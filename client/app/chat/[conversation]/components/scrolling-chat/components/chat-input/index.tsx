@@ -23,6 +23,26 @@ export const ChatInput: FC<ChatInputProps> = ({ handleScrollBottom, contact, sim
     handleScrollBottom(true);
   }, [message.length]);
 
+  // useEffect(() => {
+  //   const handleFocus = () => {
+  //     // Use a try-catch to handle cases where the element might not be focusable.
+  //     try {
+  //       if (document.hasFocus() && elementRef.current) {
+  //         elementRef.current.focus();
+  //       }
+  //     } catch (error) {
+  //       console.error("Error focusing element:", error);
+  //       // Optionally, you could use a more robust error handling mechanism here,
+  //       // such as displaying a user-friendly message or logging to a server.
+  //     }
+  //   };
+
+  //   window.addEventListener("focus", handleFocus);
+  //   return () => {
+  //     window.removeEventListener("focus", handleFocus);
+  //   };
+  // }, [elementRef]);
+
   const handleSendMessage = async () => {
     if (!sim || !contact) return;
 

@@ -22,14 +22,12 @@ export const ScrollingChat: FC<{ conversation: SimUuid }> = ({ conversation }) =
   const contact = useLiveQuery(async () => {
     try {
       const encryptedContact = await db?.contacts.where("simUuid").equals(conversation).first();
-      console.log("ENCRYPTED CONTACT");
       if (encryptedContact && simPassword) {
         const c = decryptData<Contact>(
           encryptedContact.encryptedData,
           encryptedContact.nonce,
           simPassword,
         );
-        console.log(c);
         return c;
       }
       return null;
@@ -41,13 +39,10 @@ export const ScrollingChat: FC<{ conversation: SimUuid }> = ({ conversation }) =
 
   const conversationMessages =
     useLiveQuery(async () => {
-      console.log("GETTING MESSAGES");
-      console.log(incoming.length, sim, contact);
       if (!sim || !contact) return [];
 
       const encryptedMessage =
         (await db?.message.where("conversation").equals(conversation).toArray()) || [];
-      console.log("ENCRYPTED MESSAGE", encryptedMessage);
 
       const decryptedMessages: Message[] = [];
       for (const em of encryptedMessage) {
@@ -112,7 +107,9 @@ export const ScrollingChat: FC<{ conversation: SimUuid }> = ({ conversation }) =
           ref={index === conversationMessages.length - 1 ? messageRef : undefined}
         />
       ))}
-      <ChatInput handleScrollBottom={handleScrollBottom} contact={contact} sim={sim} />
+      <div className="px-4">
+        <ChatInput handleScrollBottom={handleScrollBottom} contact={contact} sim={sim} />
+      </div>
     </ScrollShadow>
   );
 };

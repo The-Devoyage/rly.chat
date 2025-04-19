@@ -40,4 +40,4 @@ client/next-env.d.ts
 #### RUST ####
 server/*.env
 server/target
-server/*.db
+server/deeb.json

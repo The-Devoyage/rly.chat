@@ -1,8 +1,7 @@
 use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
 use uuid::Uuid;
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SharedContact {
     pub address: Uuid,

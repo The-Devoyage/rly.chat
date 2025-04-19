@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head />
       <body className={clsx("min-h-screen bg-background font-mono antialiased", fontMono.variable)}>
         <Suspense
-          fallback={<Loader message="Your next interview is going to be so much easier." />}
+          fallback={<Loader message="Loading Client" />}
         >
           <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
             <div className="relative flex flex-col h-screen">

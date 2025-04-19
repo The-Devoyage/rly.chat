@@ -10,13 +10,27 @@ export const useContacts = () => {
   const { simPassword } = useContext(SimContext);
 
   const contacts = useLiveQuery(async () => {
-    if (!simPassword) return [];
-    const encryptedContacts = await db?.contacts.toArray();
-    const decrypted: Contact[] = [];
-    for (const c of encryptedContacts || []) {
+    if (!simPassword || !db) return [];
+
+    const encryptedContacts = await db.contacts.toArray();
+    const decrypted: (Contact & { unreadCount: number })[] = [];
+
+    for (const c of encryptedContacts) {
       const contact = decryptData<Contact>(c.encryptedData, c.nonce, simPassword);
-      if (contact) decrypted.push(contact);
+      if (contact) {
+        const unreadCount = await db.message
+          .where("conversation")
+          .equals(contact.simUuid)
+          .and((m) => m.read !== true)
+          .count();
+
+        decrypted.push({
+          ...contact,
+          unreadCount,
+        });
+      }
     }
+
     return decrypted;
   }, [simPassword]);
 

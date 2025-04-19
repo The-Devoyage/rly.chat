@@ -45,10 +45,12 @@ export interface Message {
 
 // Stored in indexed db
 export interface EncryptedMessage {
+  id: number;
   conversation: SimUuid;
   encryptedData: string; // JSONSTRING<Message>
   nonce: string;
   sender: SimUuid;
+  read?: boolean;
 }
 
 export interface ServiceResponse<T> {
@@ -82,5 +84,5 @@ export interface EncryptedContact {
 
 export type RlyDatabase = Dexie & {
   contacts: EntityTable<EncryptedContact, "id">;
-  message: EntityTable<EncryptedMessage, "conversation">;
+  message: EntityTable<EncryptedMessage, "id" | "conversation">;
 };

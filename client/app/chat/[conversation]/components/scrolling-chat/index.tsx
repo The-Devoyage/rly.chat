@@ -41,11 +41,11 @@ export const ScrollingChat: FC<{ conversation: SimUuid }> = ({ conversation }) =
     useLiveQuery(async () => {
       if (!sim || !contact) return [];
 
-      const encryptedMessage =
+      const encryptedMessages =
         (await db?.message.where("conversation").equals(conversation).toArray()) || [];
 
       const decryptedMessages: Message[] = [];
-      for (const em of encryptedMessage) {
+      for (const em of encryptedMessages) {
         const decrypted = decryptMessage(
           em.sender === sim.uuid ? sim.profile.publicKey : contact?.publicKey,
           sim.profile.secretKey,
@@ -53,10 +53,28 @@ export const ScrollingChat: FC<{ conversation: SimUuid }> = ({ conversation }) =
           em.nonce,
         );
         if (!decrypted) return;
-        decryptedMessages.push(JSON.parse(decrypted) as Message);
+        const message: Message = JSON.parse(decrypted);
+        decryptedMessages.push(message);
       }
       return decryptedMessages;
     }, [incoming.length, contact]) || [];
+
+  const handleMarkRead = useCallback(async () => {
+    const messagesToUpdate =
+      (await db?.message
+        .where("conversation")
+        .equals(conversation)
+        .and((msg) => !msg.read)
+        .toArray()) || [];
+    if (messagesToUpdate.length) {
+      const updates = messagesToUpdate.map((msg) => ({
+        key: msg.id,
+        changes: { read: true },
+      }));
+
+      await db?.message.bulkUpdate(updates);
+    }
+  }, [conversation, conversationMessages]);
 
   useEffect(() => {
     if (!sim) handleRequestUnlock();
@@ -64,6 +82,7 @@ export const ScrollingChat: FC<{ conversation: SimUuid }> = ({ conversation }) =
 
   useEffect(() => {
     handleScrollBottom(true);
+    handleMarkRead();
   }, [conversationMessages.length]);
 
   const handleScrollBottom = useCallback(
@@ -107,9 +126,7 @@ export const ScrollingChat: FC<{ conversation: SimUuid }> = ({ conversation }) =
           ref={index === conversationMessages.length - 1 ? messageRef : undefined}
         />
       ))}
-      <div className="px-4">
-        <ChatInput handleScrollBottom={handleScrollBottom} contact={contact} sim={sim} />
-      </div>
+      <ChatInput handleScrollBottom={handleScrollBottom} contact={contact} sim={sim} />
     </ScrollShadow>
   );
 };

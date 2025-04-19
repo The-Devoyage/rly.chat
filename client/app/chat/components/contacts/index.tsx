@@ -4,7 +4,6 @@ import { AVATAR_COLORS } from "@/utils/constants";
 import BoringAvatar from "boring-avatars";
 import { ShareContactButton } from "../share-contact-button";
 import Link from "next/link";
-import { Button } from "@heroui/button";
 import { useContext, useEffect } from "react";
 import { SimContext } from "@/app/providers/sim-provider";
 import { useContacts } from "@/utils/useContacts";
@@ -53,7 +52,7 @@ export const Contacts = () => {
               />
               <div className="w-full">
                 <h2>{c.identifier}</h2>
-                <span className="text-gray-500 dark:text-gray-400 text-sm">{i} unread</span>
+                <span className="text-gray-500 dark:text-gray-400 text-sm">{c.unreadCount} unread</span>
               </div>
             </div>
             {i !== contacts.length - 1 && (

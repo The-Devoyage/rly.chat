@@ -1,7 +1,6 @@
 use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
 use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -40,7 +39,7 @@ impl FromStr for MessageType {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SerializedMessage {
     pub address: Uuid,

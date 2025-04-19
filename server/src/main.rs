@@ -39,7 +39,8 @@ async fn main() -> std::io::Result<()> {
             .allow_any_origin()
             .allow_any_method()
             .allow_any_header()
-            .allowed_origin("http://localhost:3000");
+            .allowed_origin("http://localhost:3000")
+            .allowed_origin("https://rly.chat");
 
         App::new()
             .wrap(cors)

@@ -71,6 +71,12 @@ The server-side application is built using Rust, a language known for its speed,
 
     This command will compile and run the Rust server. You should see output indicating that the server has started, typically listening on a specific port (e.g., `localhost:8080`).
 
+## Running Container with Volume Mounts
+
+```
+docker run -p 5000:5000 --env-file ./.env -v deeb.json:/deeb.json thedevoyage/rly-server:0.x.x
+```
+
 ## Next Steps and Considerations:
 
 * **Self-Hosting Guide:** A more comprehensive guide on self-hosting, including configuration options and potential challenges, would be valuable for users who choose this route.
@@ -79,3 +85,4 @@ The server-side application is built using Rust, a language known for its speed,
 ## Disclaimer:
 
 Rly Chat is currently in development and may have limitations or bugs. Use it at your own discretion. We are continuously working to improve its security and features.
+

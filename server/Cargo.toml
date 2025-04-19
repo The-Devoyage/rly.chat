@@ -1,6 +1,6 @@
 [package]
 name = "rly-server"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
 
 [dependencies]
@@ -20,4 +20,4 @@ serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"
 uuid = { version = "1.16.0", features = ["serde", "v4"] }
 tokio = { version = "1", features = ["full"] }
-deeb = { path = "../../deeb" }
+deeb = { version = "0.0.5" }

@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  rly-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rly-server
+    ports:
+      - "8080:8080"  # change this if your app uses a different port
+    volumes:
+      - ./data:/app/data            # app data
+      - ./config:/app/config        # config files
+      - ./logs:/app/logs            # logs
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production         # or whatever your app uses
+

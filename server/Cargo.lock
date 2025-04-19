@@ -548,6 +548,8 @@ dependencies = [
 [[package]]
 name = "deeb"
 version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed2531f35dd9d18396ab2f557566232d153c33310e522a8a2e3eea419a947422"
 dependencies = [
  "anyhow",
  "env_logger 0.11.8",
@@ -1503,7 +1505,7 @@ dependencies = [
 
 [[package]]
 name = "rly-server"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "actix-cors",
  "actix-web",

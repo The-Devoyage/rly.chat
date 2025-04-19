@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useRef, useState } from "react";
 import { Textarea } from "@heroui/input";
 import clsx from "clsx";
 import { Contact, EncryptedMessage, Message, SerializedMessage, Sim } from "@/types";
@@ -18,33 +18,34 @@ export const ChatInput: FC<ChatInputProps> = ({ handleScrollBottom, contact, sim
   const [maxRows, setMaxRows] = useState<number | undefined>(1);
   const { sendJsonMessage } = useContext(SocketContext);
   const { db } = useContext(DatabaseContext);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     handleScrollBottom(true);
   }, [message.length]);
 
-  // useEffect(() => {
-  //   const handleFocus = () => {
-  //     // Use a try-catch to handle cases where the element might not be focusable.
-  //     try {
-  //       if (document.hasFocus() && elementRef.current) {
-  //         elementRef.current.focus();
-  //       }
-  //     } catch (error) {
-  //       console.error("Error focusing element:", error);
-  //       // Optionally, you could use a more robust error handling mechanism here,
-  //       // such as displaying a user-friendly message or logging to a server.
-  //     }
-  //   };
+  useEffect(() => {
+    const handleFocus = () => {
+      try {
+        if (inputRef.current) {
+          console.log("FOCUSING");
+          inputRef.current.focus();
+        }
+      } catch (error) {
+        console.error("Error focusing element:", error);
+      }
+    };
 
-  //   window.addEventListener("focus", handleFocus);
-  //   return () => {
-  //     window.removeEventListener("focus", handleFocus);
-  //   };
-  // }, [elementRef]);
+    handleFocus();
+
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [inputRef]);
 
   const handleSendMessage = async () => {
-    if (!sim || !contact) return;
+    if (!sim || !contact || !message.trim()) return;
 
     const m: Message = { to: contact.simUuid, from: sim.uuid, text: message };
 
@@ -79,6 +80,8 @@ export const ChatInput: FC<ChatInputProps> = ({ handleScrollBottom, contact, sim
     await db?.message.add(store);
 
     sendJsonMessage(send);
+    setMessage("");
+    setMaxRows(1);
   };
 
   return (
@@ -89,11 +92,13 @@ export const ChatInput: FC<ChatInputProps> = ({ handleScrollBottom, contact, sim
       )}
     >
       <Textarea
+        className="my-2"
         onFocusChange={(focused) => {
           setMaxRows(focused ? undefined : 1);
           handleScrollBottom(focused);
         }}
         placeholder="Your message..."
+        ref={inputRef}
         onChange={(e) => {
           setMessage(e.currentTarget.value);
         }}
@@ -103,8 +108,6 @@ export const ChatInput: FC<ChatInputProps> = ({ handleScrollBottom, contact, sim
           e.preventDefault();
           if (e.key === "Enter" && !e.shiftKey) {
             handleSendMessage();
-            setMessage("");
-            setMaxRows(1);
           }
         }}
       />

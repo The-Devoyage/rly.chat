@@ -52,7 +52,17 @@ export const Contacts = () => {
               />
               <div className="w-full">
                 <h2>{c.identifier}</h2>
-                <span className="text-gray-500 dark:text-gray-400 text-sm">{c.unreadCount} unread</span>
+                <div className="flex items-center">
+                  {!!c.unreadCount && (
+                    <span className="relative flex size-3 mr-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex size-3 rounded-full bg-green-500"></span>
+                    </span>
+                  )}
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">
+                    {c.unreadCount} unread
+                  </span>
+                </div>
               </div>
             </div>
             {i !== contacts.length - 1 && (

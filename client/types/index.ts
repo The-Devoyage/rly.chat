@@ -45,7 +45,7 @@ export interface Message {
 
 // Stored in indexed db
 export interface EncryptedMessage {
-  id: number;
+  id?: number;
   conversation: SimUuid;
   encryptedData: string; // JSONSTRING<Message>
   nonce: string;

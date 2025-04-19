@@ -92,7 +92,7 @@ export const ChatInput: FC<ChatInputProps> = ({ handleScrollBottom, contact, sim
       )}
     >
       <Textarea
-        className="my-2"
+        className={clsx({ "my-2": !maxRows })}
         onFocusChange={(focused) => {
           setMaxRows(focused ? undefined : 1);
           handleScrollBottom(focused);

@@ -57,6 +57,7 @@ export const PasswordPrompt = () => {
               name="password"
               placeholder="Unlock your SIM"
               type="password"
+              size="lg"
             />
           </ModalBody>
           <ModalFooter>

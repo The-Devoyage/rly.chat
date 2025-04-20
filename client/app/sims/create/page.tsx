@@ -40,31 +40,12 @@ export default function CreateSimPage() {
     };
 
     const c = window.confirm(
-      "Downloading SIM... Keep this file safe. There are no accounts on RLY. If you loose this file, you will loose access to your SIM forever.",
+      "Download your SIM and keep it in a safe place to recover your account. Rly can not recover your account for you if this is lost.",
     );
 
     if (c) {
       localStorage.setItem("sim", JSON.stringify(protectedSim));
-
-      // Convert SIM object to JSON string
-      const jsonString = JSON.stringify(protectedSim, null, 2);
-
-      // Create a Blob and trigger download
-      const blob = new Blob([jsonString], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${identifier}-sim.json`; // File name based on identifier
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      // Clean up object URL
-      URL.revokeObjectURL(url);
-
       window.dispatchEvent(new Event("storage"));
-
       const redirectUri = searchQuery.get("redirect_uri");
       if (redirectUri) {
         return router.push(redirectUri);
@@ -90,6 +71,7 @@ export default function CreateSimPage() {
           placeholder="My first SIM"
           type="text"
           autoComplete="off"
+          size="lg"
         />
         <Input
           isRequired
@@ -100,6 +82,7 @@ export default function CreateSimPage() {
           placeholder="Protect your SIM"
           type="password"
           autoComplete="off"
+          size="lg"
         />
 
         <Button className="w-full" type="submit" color="primary">

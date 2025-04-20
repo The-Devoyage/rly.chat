@@ -104,6 +104,7 @@ export const ChatInput: FC<ChatInputProps> = ({ handleScrollBottom, contact, sim
         }}
         value={message}
         maxRows={!!message ? undefined : maxRows}
+        size="lg"
         onKeyUp={(e) => {
           e.preventDefault();
           if (e.key === "Enter" && !e.shiftKey) {

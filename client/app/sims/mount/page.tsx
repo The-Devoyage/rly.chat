@@ -71,6 +71,7 @@ export default function LoadSimPage() {
           labelPlacement="outside"
           name="simFile"
           type="file"
+          size="lg"
         />
         <Input
           isRequired
@@ -80,6 +81,7 @@ export default function LoadSimPage() {
           name="password"
           placeholder="Unlock your SIM"
           type="password"
+          size="lg"
         />
 
         <Button className="w-full" type="submit" color="primary">

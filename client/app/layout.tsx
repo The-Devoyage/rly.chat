@@ -37,6 +37,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover"
         />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className={clsx("min-h-screen bg-background font-mono antialiased", fontMono.variable)}>
         <Suspense fallback={<Loader message="Loading Client" />}>

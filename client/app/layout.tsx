@@ -32,11 +32,14 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning lang="en">
-      <head />
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover"
+        />
+      </head>
       <body className={clsx("min-h-screen bg-background font-mono antialiased", fontMono.variable)}>
-        <Suspense
-          fallback={<Loader message="Loading Client" />}
-        >
+        <Suspense fallback={<Loader message="Loading Client" />}>
           <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
             <div className="relative flex flex-col h-screen">
               <Navbar />

@@ -34,7 +34,7 @@ export const IdentifierDropdown = () => {
         </Chip>
       </DropdownTrigger>
       <DropdownMenu>
-        <DropdownItem key="contacts" onPress={handleContacts} className={!!sim ? "" : "hidden"}>Contacts</DropdownItem>
+        <DropdownItem key="contacts" onPress={handleContacts} className={!!encryptedSim ? "" : "hidden"}>Contacts</DropdownItem>
         <DropdownItem key="lock_unlock_sim" onPress={handleLock} className={!!sim ? "" : "hidden"}>
           Lock Sim
         </DropdownItem>

@@ -70,6 +70,7 @@ export const SocketProvider: FC<{ children: ReactNode }> = ({ children }) => {
           console.error(err);
         }
       },
+      // shouldReconnect: () => true,
     },
     Boolean(sim),
   );

@@ -48,7 +48,7 @@ pub async fn chat(
         )
         .await;
 
-    if let Ok(not_received) = not_received {
+    if let Ok(Some(not_received)) = not_received {
         for msg in not_received.iter() {
             let _ = session
                 .clone()

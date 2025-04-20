@@ -25,6 +25,7 @@ export const useContacts = () => {
           .count();
 
         decrypted.push({
+          id: c.id,
           ...contact,
           unreadCount,
         });

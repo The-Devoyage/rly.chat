@@ -7,15 +7,23 @@ import Link from "next/link";
 import { useContext, useEffect } from "react";
 import { SimContext } from "@/app/providers/sim-provider";
 import { useContacts } from "@/utils/useContacts";
+import { Button } from "@heroui/button";
+import { DatabaseContext } from "@/app/providers/db-provider";
 
 export const Contacts = () => {
   const contacts = useContacts();
   const { handleRequestUnlock, decryptSim } = useContext(SimContext);
+  const { db } = useContext(DatabaseContext);
   const sim = decryptSim();
 
   useEffect(() => {
     if (!sim) handleRequestUnlock();
   }, [sim]);
+
+  const handleRemoveContact = (contactId: number) => {
+    const c = window.confirm("Confirm delete contact?");
+    if (c) db?.contacts.delete(contactId);
+  };
 
   if (!contacts?.length) {
     return (
@@ -41,35 +49,49 @@ export const Contacts = () => {
         </div>
       </div>
       {contacts.map((c, i) => (
-        <Link href={`/chat/${c.simUuid}`} key={c.simUuid}>
-          <div className="hover:bg-gray-100 dark:hover:bg-slate-700 transition-all rounded">
-            <div className="flex p-2 gap-4 mb-2 justify-center items-center">
-              <BoringAvatar
-                name={c.identifier}
-                className="w-10 h-10"
-                variant="beam"
-                colors={AVATAR_COLORS}
-              />
-              <div className="w-full">
-                <h2>{c.identifier}</h2>
-                <div className="flex items-center">
-                  {!!c.unreadCount && (
-                    <span className="relative flex size-3 mr-2">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                      <span className="relative inline-flex size-3 rounded-full bg-green-500"></span>
-                    </span>
-                  )}
-                  <span className="text-gray-500 dark:text-gray-400 text-sm">
-                    {c.unreadCount} unread
-                  </span>
+        <>
+          <div className="flex justify-between items-center">
+            <Link href={`/chat/${c.simUuid}`} key={c.simUuid}>
+              <div className="hover:bg-gray-100 dark:hover:bg-slate-700 transition-all rounded">
+                <div className="flex p-2 gap-4 mb-2 justify-center items-center">
+                  <BoringAvatar
+                    name={c.identifier}
+                    className="w-10 h-10"
+                    variant="beam"
+                    colors={AVATAR_COLORS}
+                  />
+                  <div className="w-full">
+                    <h2>{c.identifier}</h2>
+                    <div className="flex items-center">
+                      {!!c.unreadCount && (
+                        <span className="relative flex size-3 mr-2">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                          <span className="relative inline-flex size-3 rounded-full bg-green-500"></span>
+                        </span>
+                      )}
+                      <span className="text-gray-500 dark:text-gray-400 text-sm">
+                        {c.unreadCount} unread
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            {i !== contacts.length - 1 && (
-              <hr className="border border-sm border-orange-500/25 my-2" />
-            )}
+            </Link>
+            <Button
+              size="sm"
+              color="danger"
+              variant="ghost"
+              onPress={() => {
+                handleRemoveContact(c.id!);
+              }}
+            >
+              Remove
+            </Button>
           </div>
-        </Link>
+          {i !== contacts.length - 1 && (
+            <hr className="border border-sm border-orange-500/25 my-2" />
+          )}
+        </>
       ))}
     </div>
   );

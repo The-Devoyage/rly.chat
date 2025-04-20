@@ -12,6 +12,7 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 };
 
 export interface Contact {
+  id?: number;
   simUuid: SimUuid;
   address: Address;
   publicKey: PublicKey;
